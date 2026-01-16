@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       # contents permission to clone the repository
-      contents: read
+      contents: write
       packages: read
       # To issues and pull-requests permissions to write results as pull
       # request comments. Omit them if you don't need summary comments
