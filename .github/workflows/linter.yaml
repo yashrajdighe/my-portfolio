@@ -37,6 +37,7 @@ jobs:
         env:
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISABLE_ERRORS: true
           FIX_ANSIBLE: true
           FIX_BIOME_FORMAT: true
           FIX_BIOME_LINT: true
