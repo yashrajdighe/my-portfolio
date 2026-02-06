@@ -13,11 +13,11 @@ export default function BlogRedirectPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen blog-shell">
+    <div className="min-h-screen">
       <main className="mx-auto flex w-full max-w-3xl flex-col px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16 md:px-10">
         <Card className="flex flex-col gap-3">
-          <h1 className="text-xl font-semibold text-slate-100">Redirecting</h1>
-          <p className="text-sm text-muted">
+          <h1 className="text-xl font-semibold text-[var(--foreground)]">Redirecting</h1>
+          <p className="text-sm text-[var(--muted)]">
             Taking you to the full blog listing. If you are not redirected, use
             the button below.
           </p>

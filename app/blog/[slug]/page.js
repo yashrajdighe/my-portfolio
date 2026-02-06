@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import { getBlogPost, getBlogPosts } from "@/lib/blog";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
 import ScrollToTop from "@/components/ScrollToTop";
+import Nav from "@/components/Nav";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -46,41 +46,27 @@ export default async function BlogPostPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen blog-shell">
-      <main className="mx-auto flex w-full max-w-4xl flex-col px-6 pb-24 pt-16 md:px-10">
-        <Section className="pt-0">
+    <div className="min-h-screen">
+      <Nav />
+
+      <main className="mx-auto flex w-full max-w-3xl flex-col px-4 pb-20 pt-20 sm:px-6 md:px-10 md:pb-24 md:pt-24">
+        <Section className="pt-4 sm:pt-8">
           <MotionWrap>
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-4 sm:mb-8">
-              <time className="self-start md:self-auto">
-                <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    className="h-3.5 w-3.5 text-slate-500"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8 6V4m8 2V4M3.5 9.5h17m-15.5 0v8a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-8M6.5 12.5h3m-3 3h3m3-3h3m-3 3h3"
-                    />
-                  </svg>
-                  {post.date}
-                </span>
+            <div className="mb-6 flex items-center justify-between sm:mb-8">
+              <time className="text-xs text-[var(--muted)]">
+                {post.date}
               </time>
-              <Button href="/blogs/" variant="secondary" size="sm" className="self-start">
-                Back to Blog
+              <Button href="/blogs/" variant="ghost" size="sm">
+                &larr; All Posts
               </Button>
             </div>
-            <div className="space-y-4">
-              <h1 className="text-2xl font-semibold text-slate-50 sm:text-3xl md:text-4xl">
-                {post.title}
-              </h1>
-            </div>
+
+            <h1 className="text-xl font-bold tracking-tight text-[var(--foreground)] sm:text-2xl md:text-3xl lg:text-4xl">
+              {post.title}
+            </h1>
+
             {post.coverImage ? (
-              <div className="mt-8">
+              <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)] sm:mt-8">
                 <img
                   src={post.coverImage}
                   alt={`${post.title} cover`}
@@ -88,23 +74,33 @@ export default async function BlogPostPage({ params }) {
                   decoding="async"
                   width="1200"
                   height="630"
-                  className="h-52 w-full object-contain sm:h-64 md:h-72"
+                  className="h-40 w-full object-contain sm:h-56 md:h-72"
                 />
               </div>
             ) : null}
+
             <div
-              className="blog-content mt-8 text-base leading-relaxed text-slate-200"
+              className="blog-content mt-8 text-[15px] leading-relaxed text-[var(--muted)] sm:mt-10 sm:text-base"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
+
             {post.tags.length ? (
-              <div className="mt-8 flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
-                  <Badge key={tag} variant="outline">
-                    {tag}
-                  </Badge>
-                ))}
+              <div className="mt-8 border-t border-[var(--border)] pt-5 sm:mt-10 sm:pt-6">
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <Badge key={tag} variant="outline">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             ) : null}
+
+            <div className="mt-6 border-t border-[var(--border)] pt-5 sm:mt-8 sm:pt-6">
+              <Button href="/blogs/" variant="ghost" size="sm">
+                &larr; Back to all posts
+              </Button>
+            </div>
           </MotionWrap>
         </Section>
       </main>

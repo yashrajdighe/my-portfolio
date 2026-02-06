@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getResume } from "@/lib/resume";
 import { getBlogPosts } from "@/lib/blog";
 import { Badge } from "@/components/ui/Badge";
@@ -7,10 +8,10 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import LiveResume from "@/components/LiveResume";
 import MotionWrap from "@/components/MotionWrap";
 import ResumeDownload from "@/components/ResumeDownload";
-import CopyResumeLink from "@/components/CopyResumeLink";
 import { getLastUpdated } from "@/lib/lastUpdated";
 import ScrollToTop from "@/components/ScrollToTop";
 import ProjectStarSection from "@/components/ProjectStarSection";
+import Nav from "@/components/Nav";
 
 export default async function Home() {
   const resume = await getResume();
@@ -25,7 +26,6 @@ export default async function Home() {
     contact,
   } = resume;
   const linkedIn = basics.profiles.find((profile) => profile.network === "LinkedIn");
-  const githubAccounts = basics.githubAccounts ?? [];
   const lastUpdated = getLastUpdated();
   const starredBlogs = (await getBlogPosts({ includeDetails: true })).filter(
     (post) => post.starred,
@@ -33,147 +33,85 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen">
-      <main className="mx-auto flex w-full max-w-6xl flex-col px-6 pb-24 pt-16 md:px-10">
-        <header className="flex flex-col gap-10 md:gap-14">
-          <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.3em] text-emerald-300/70">
-            <span>{basics.label}</span>
-            <span className="h-1 w-1 rounded-full bg-emerald-300/60" />
-            <span>{basics.location.region}</span>
-          </div>
-          <MotionWrap className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="flex flex-col gap-6">
-              <h1 className="text-3xl font-semibold text-slate-50 md:text-5xl">
-                {basics.headline}
-              </h1>
-              <p className="text-lg text-slate-300 md:text-xl">
-                {basics.subheadline}
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <Button href="#resume">View Live Resume</Button>
-                <ResumeDownload label={resume.resumeDownload.label} />
-                <CopyResumeLink />
-                <Button href="/blogs" variant="secondary">
-                  Read Blogs
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-3 text-sm text-muted">
-                <span>{basics.email}</span>
-                <span className="h-1 w-1 rounded-full bg-slate-600" />
-                <span>{basics.phone}</span>
-              </div>
-              {githubAccounts.length ? (
-                <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
-                  <span className="uppercase tracking-[0.2em] text-slate-500">GitHub</span>
-                  {githubAccounts.map((account, index) => (
-                    <span key={account.username} className="flex items-center gap-2">
-                      <span className="h-1 w-1 rounded-full bg-slate-600" />
-                      <a
-                        href={`${account.url}`}
-                        className="hover:text-emerald-100"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {account.username}
-                      </a>
-                    </span>
-                  ))}
-                </div>
-              ) : null}
+      <Nav name={basics.name} />
+
+      <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-20 sm:px-6 md:px-10 md:pb-24 md:pt-24">
+        {/* Hero */}
+        <header className="flex flex-col gap-4 pt-8 sm:gap-6 md:pt-20">
+          <MotionWrap>
+            <p className="text-sm text-[var(--muted)]">{basics.label}</p>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight text-[var(--foreground)] sm:text-4xl md:text-6xl">
+              {basics.headline}
+            </h1>
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--muted)] sm:mt-4 sm:text-lg md:text-xl">
+              {basics.subheadline}
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3 sm:mt-8">
+              <ResumeDownload label={resume.resumeDownload.label} />
+              <Button href="#contact" variant="ghost">
+                Get in Touch &rarr;
+              </Button>
             </div>
-            <Card className="relative overflow-hidden">
-              <div className="mb-3 inline-flex w-fit rounded-full border border-emerald-400/40 px-3 py-1 text-xs text-emerald-200 md:absolute md:right-4 md:top-4 md:mb-0">
-                Architectural Clarity
-              </div>
-              <h3 className="text-sm uppercase tracking-[0.3em] text-emerald-300/70">
-                Platform Summary
-              </h3>
-              <div className="mt-4 space-y-3 text-sm text-slate-300">
+          </MotionWrap>
+        </header>
+
+        {/* About & Stats */}
+        <Section>
+          <MotionWrap>
+            <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-10">
+              <div className="space-y-4 text-sm leading-relaxed text-[var(--muted)] md:text-base">
                 {summary.map((item) => (
                   <p key={item}>{item}</p>
                 ))}
               </div>
-            </Card>
-          </MotionWrap>
-          <MotionWrap className="grid gap-4 md:grid-cols-3">
-            {impactStats.map((stat) => (
-              <Card key={stat.label} className="glow-ring">
-                <p className="text-2xl font-semibold text-emerald-200 md:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.3em] text-slate-400">
-                  {stat.label}
-                </p>
-              </Card>
-            ))}
-          </MotionWrap>
-        </header>
-
-        <Section id="resume">
-          <MotionWrap>
-            <SectionHeading
-              eyebrow="Live Resume"
-              title="Experience Snapshot & Delivery"
-              description="Impact-driven role summaries with the technical depth behind each outcome."
-            />
-            <LiveResume work={work} resume={resume} />
-          </MotionWrap>
-        </Section>
-
-        <Section>
-          <MotionWrap>
-            <SectionHeading
-              eyebrow="Verification"
-              title="Cloud Certifications"
-              description="Verified credentials with renewal tracking."
-            />
-            <div className="grid gap-4 md:grid-cols-2">
-              {certifications.map((cert) => (
-                <Card key={cert.name}>
-                  <div className="flex flex-wrap items-start gap-2">
-                    <h3 className="min-w-0 flex-1 text-lg font-semibold text-slate-100">
-                      {cert.name}
-                    </h3>
-                    <Badge variant="accent" className="ml-auto w-fit shrink-0">
-                      {cert.badge}
-                    </Badge>
+              <div className="grid grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-1 lg:gap-6">
+                {impactStats.map((stat) => (
+                  <div key={stat.label}>
+                    <p className="text-xl font-semibold text-[var(--foreground)] sm:text-2xl">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-[11px] text-[var(--muted)] sm:text-xs">
+                      {stat.label}
+                    </p>
                   </div>
-                  <p className="mt-2 text-sm text-muted">{cert.issuer}</p>
-                  <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-400">
-                    <span>Issued: {cert.date}</span>
-                    <span>Expires: {cert.expiry}</span>
-                  </div>
-                  <a
-                    className="mt-4 inline-flex text-sm text-emerald-200 hover:text-emerald-100"
-                    href={cert.verifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Verify credential
-                  </a>
-                </Card>
-              ))}
+                ))}
+              </div>
             </div>
           </MotionWrap>
         </Section>
 
-        <Section>
+        {/* Experience */}
+        <Section id="experience">
+          <MotionWrap>
+            <SectionHeading
+              eyebrow="Experience"
+              title="Where I've Worked"
+              description="Impact-driven summaries with technical depth behind each outcome."
+            />
+            <LiveResume work={work} resumeDownload={resume.resumeDownload} />
+          </MotionWrap>
+        </Section>
+
+        {/* Projects */}
+        <Section id="projects">
           <ProjectStarSection projects={projects} />
         </Section>
 
+        {/* Tech Stack */}
         <Section>
           <MotionWrap>
             <SectionHeading
-              eyebrow="Categorized Stack"
-              title="Provisioning, Orchestration, Observability"
-              description="A curated toolbelt aligned to platform reliability."
+              eyebrow="Stack"
+              title="Tools & Technologies"
+              description="Curated toolbelt aligned to platform reliability."
             />
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {Object.entries(stack).map(([category, tools]) => (
                 <Card key={category}>
-                  <p className="text-xs uppercase tracking-[0.3em] text-emerald-300/70">
+                  <p className="mb-3 text-xs font-medium text-[var(--accent)]">
                     {category}
                   </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {tools.map((tool) => (
                       <Badge key={tool}>{tool}</Badge>
                     ))}
@@ -184,93 +122,160 @@ export default async function Home() {
           </MotionWrap>
         </Section>
 
+        {/* Certifications */}
         <Section>
           <MotionWrap>
             <SectionHeading
-              eyebrow="Engineering Lab"
-              title="Technical Deep Dives"
-              description="Minimalist notes on performance, platform patterns, and golden paths."
+              eyebrow="Certifications"
+              title="Verified Credentials"
             />
-            <div className="grid gap-3">
-              {starredBlogs.map((post) => (
-                <a
-                  key={post.slug}
-                  href={`/blog/${post.slug}/`}
-                  className="group"
-                >
-                  <Card className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-semibold text-slate-100 group-hover:text-emerald-100">
-                        {post.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-muted">{post.excerpt}</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {certifications.map((cert) => (
+                <Card key={cert.name}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      {/* Shield icon */}
+                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--accent)]/10">
+                        <svg
+                          viewBox="0 0 20 20"
+                          className="h-4 w-4 text-[var(--accent)]"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M9.661 2.237a.531.531 0 0 1 .678 0 11.947 11.947 0 0 0 7.078 2.749.5.5 0 0 1 .479.425c.069.52.104 1.05.104 1.59 0 5.162-3.26 9.563-7.834 11.256a.48.48 0 0 1-.332 0C5.26 16.564 2 12.163 2 7c0-.538.035-1.069.104-1.589a.5.5 0 0 1 .48-.425 11.947 11.947 0 0 0 7.077-2.75Zm4.196 5.954a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-medium text-[var(--foreground)]">
+                          {cert.name}
+                        </h3>
+                        <p className="mt-1 text-xs text-[var(--muted)]">
+                          {cert.issuer}
+                        </p>
+                      </div>
                     </div>
-                    <span className="hidden sm:inline-flex">
-                      <Badge variant="subtle" className="whitespace-nowrap">
-                        {post.date}
-                      </Badge>
-                    </span>
-                  </Card>
-                </a>
+                    <Badge variant="outline" className="shrink-0">
+                      {cert.badge}
+                    </Badge>
+                  </div>
+                  <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--muted)]">
+                    <span>Issued {cert.date}</span>
+                    {cert.expiry ? (
+                      <>
+                        <span className="h-0.5 w-0.5 rounded-full bg-zinc-600" />
+                        <span>Expires {cert.expiry}</span>
+                      </>
+                    ) : null}
+                  </div>
+                  <a
+                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] transition-colors hover:text-[var(--accent)]/80"
+                    href={cert.verifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <svg
+                      viewBox="0 0 16 16"
+                      className="h-3.5 w-3.5"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.914 6.025a.75.75 0 0 1 1.06 0 3.5 3.5 0 0 1 0 4.95l-2 2a3.5 3.5 0 0 1-5.396-4.402.75.75 0 0 1 1.251.827 2 2 0 0 0 3.085 2.514l2-2a2 2 0 0 0 0-2.828.75.75 0 0 1 0-1.06Z"
+                        clipRule="evenodd"
+                      />
+                      <path
+                        fillRule="evenodd"
+                        d="M7.086 9.975a.75.75 0 0 1-1.06 0 3.5 3.5 0 0 1 0-4.95l2-2a3.5 3.5 0 0 1 5.396 4.402.75.75 0 0 1-1.251-.827 2 2 0 0 0-3.085-2.514l-2 2a2 2 0 0 0 0 2.828.75.75 0 0 1 0 1.06Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Verify credential
+                  </a>
+                </Card>
               ))}
             </div>
           </MotionWrap>
         </Section>
 
+        {/* Featured Blog Posts */}
+        {starredBlogs.length > 0 && (
+          <Section>
+            <MotionWrap>
+              <SectionHeading
+                eyebrow="Featured"
+                title="From the Blog"
+                description="Recent technical deep dives and operational notes."
+              />
+              <div className="space-y-1">
+                {starredBlogs.map((post) => (
+                  <Link
+                    key={post.slug}
+                    href={`/blog/${post.slug}/`}
+                    className="group block"
+                  >
+                    <div className="flex items-start justify-between gap-4 rounded-xl px-1 py-3 transition-colors hover:bg-[var(--surface)]">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-medium text-[var(--foreground)] group-hover:text-[var(--accent)]">
+                          {post.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-[var(--muted)]">{post.excerpt}</p>
+                      </div>
+                      <span className="hidden shrink-0 pt-0.5 text-xs text-[var(--muted)] sm:block">
+                        {post.date}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-6">
+                <Button href="/blogs/" variant="ghost" size="sm">
+                  View all posts &rarr;
+                </Button>
+              </div>
+            </MotionWrap>
+          </Section>
+        )}
+
+        {/* Contact */}
         <Section id="contact">
           <MotionWrap>
-            <SectionHeading
-              eyebrow="Get In Touch"
-              title="Let’s Build Something Reliable"
-              description="Fastest way to reach me is email or LinkedIn. Share a short brief and I’ll respond within 24–48 hours."
-            />
-            <Card className="grid gap-4 md:grid-cols-2">
-              <div className="flex h-full flex-col">
-                <p className="text-sm text-slate-300">
-                  Prefer a simple path? Use the buttons below or reply with the
-                  essentials: project goal, timeframe, and current stack.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Button href={`mailto:${basics.email}`} variant="primary">
-                    Email {basics.email}
+            <div className="mx-auto max-w-xl text-center">
+              <SectionHeading
+                eyebrow="Contact"
+                title="Let's Work Together"
+                description="Share your project goal, timeframe, and current stack. I'll respond within 24-48 hours."
+                align="center"
+              />
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Button href={`mailto:${basics.email}`}>
+                  Email Me
+                </Button>
+                {linkedIn ? (
+                  <Button href={linkedIn.url} variant="secondary">
+                    LinkedIn
                   </Button>
-                  {linkedIn ? (
-                    <Button href={linkedIn.url} variant="secondary">
-                      Message on LinkedIn
-                    </Button>
-                  ) : null}
-                </div>
-                <div className="mt-5 flex flex-wrap gap-3 text-sm text-muted">
-                  <span>{contact.availability}</span>
-                  <span className="h-1 w-1 rounded-full bg-slate-600" />
-                  <span>{contact.timezone}</span>
-                </div>
+                ) : null}
+                <Button
+                  href="https://calendar.app.google/FVusmLYUTdkxdEKQA"
+                  variant="secondary"
+                >
+                  Schedule a Call
+                </Button>
               </div>
-              <div className="flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-xs text-slate-300">
-                <p className="text-emerald-200">Book a quick call</p>
-                <p className="mt-2 text-xs text-muted">
-                  Use Google Calendar to grab a slot for an intro and technical
-                  alignment.
-                </p>
-                <div className="mt-4 space-y-2 text-xs text-slate-400">
-                  <p>15–30 min focused sync</p>
-                  <p>Walk through scope, goals, and constraints</p>
-                  <p>Timezone: {contact.timezone}</p>
-                </div>
-                <div className="mt-5">
-                  <Button
-                    href="https://calendar.app.google/FVusmLYUTdkxdEKQA"
-                    variant="primary"
-                  >
-                    Schedule via Google Calendar
-                  </Button>
-                </div>
-              </div>
-            </Card>
+              <p className="mt-6 text-xs text-[var(--muted)]">
+                {contact.availability} &middot; {contact.timezone}
+              </p>
+            </div>
           </MotionWrap>
         </Section>
 
-        <footer className="mt-4 text-xs text-muted">
+        {/* Footer */}
+        <footer className="border-t border-[var(--border)] pt-6 text-xs text-[var(--muted)] sm:pt-8">
           Last updated {lastUpdated}
         </footer>
       </main>

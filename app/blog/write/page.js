@@ -15,9 +15,9 @@ const slugify = (value) =>
     .replace(/(^-|-$)/g, "");
 
 const inputClasses =
-  "w-full rounded-2xl border border-slate-700 bg-slate-900/50 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400/40";
+  "w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40";
 
-const labelClasses = "text-xs font-semibold uppercase tracking-[0.2em] text-muted";
+const labelClasses = "text-xs font-medium text-[var(--muted)]";
 
 const TinyMCEEditor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
@@ -164,8 +164,8 @@ export default function BlogWritePage() {
   };
 
   return (
-    <div className="min-h-screen blog-shell">
-      <main className="mx-auto flex w-full max-w-5xl flex-col px-6 pb-24 pt-16 md:px-10">
+    <div className="min-h-screen">
+      <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-20 sm:px-6 md:px-10 md:pb-24 md:pt-24">
         <Section className="pt-0">
           <MotionWrap>
             <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -248,14 +248,14 @@ export default function BlogWritePage() {
                     onChange={(event) => setCoverImage(event.target.value)}
                   />
                 </label>
-                <label className="mt-2 flex items-center gap-3 text-sm text-slate-200">
+                <label className="mt-2 flex items-center gap-3 text-sm text-[var(--foreground)]">
                   <input
                     type="checkbox"
                     checked={starred}
                     onChange={(event) => setStarred(event.target.checked)}
-                    className="h-4 w-4 rounded border-slate-700 bg-slate-900/60 text-emerald-400 accent-emerald-400 focus:ring-2 focus:ring-emerald-400/40"
+                    className="h-4 w-4 rounded border-[var(--border)] bg-[var(--surface)] accent-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/40"
                   />
-                  Mark as starred (show in Technical Deep Dives)
+                  Mark as starred (show on homepage)
                 </label>
               </Card>
               <Card className="space-y-4">
