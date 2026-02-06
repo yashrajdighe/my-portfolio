@@ -1,69 +1,62 @@
+import Link from "next/link";
 import { getBlogPosts } from "@/lib/blog";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
+import Nav from "@/components/Nav";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default async function BlogPage() {
   const posts = await getBlogPosts();
 
   return (
-    <div className="min-h-screen blog-shell">
-      <main className="mx-auto flex w-full max-w-4xl flex-col px-6 pb-24 pt-16 md:px-10">
-        <Section className="pt-0">
+    <div className="min-h-screen">
+      <Nav />
+
+      <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-20 sm:px-6 md:px-10 md:pb-24 md:pt-24">
+        <Section className="pt-4 sm:pt-8">
           <MotionWrap>
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-4 sm:mb-8">
+            <div className="flex flex-wrap items-end justify-between gap-4 sm:gap-6">
               <SectionHeading
                 eyebrow="Blog"
-                title="Platform Notes & Field Logs"
-                description="Technical deep dives and operational lessons captured in short, skimmable entries."
+                title="Technical Notes"
+                description="Deep dives and operational lessons in short, skimmable entries."
+                className="mb-0"
               />
-              <Button href="/" variant="secondary" size="sm" className="ml-auto self-start">
-                Back to Portfolio
+              <Button href="/" variant="ghost" size="sm" className="shrink-0">
+                &larr; Back to Portfolio
               </Button>
             </div>
-            <div className="grid gap-4">
+
+            <div className="mt-8 divide-y divide-[var(--border)] sm:mt-12">
               {posts.length ? (
                 posts.map((post) => (
-                  <a key={post.slug} href={`/blog/${post.slug}/`} className="group">
-                    <Card className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
-                      <div className="md:min-w-0 md:flex-1">
-                        <h3 className="text-base font-semibold text-slate-100 group-hover:text-emerald-100 sm:text-lg">
+                  <Link key={post.slug} href={`/blog/${post.slug}/`} className="group block">
+                    <div className="flex flex-col gap-1.5 py-5 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:py-6">
+                      <div className="min-w-0 sm:flex-1">
+                        <h3 className="text-sm font-medium text-[var(--foreground)] transition-colors group-hover:text-[var(--accent)] sm:text-base">
                           {post.title}
                         </h3>
-                        <p className="mt-2 text-sm text-muted sm:text-base">{post.excerpt}</p>
+                        <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
+                          {post.excerpt}
+                        </p>
                       </div>
-                      <time className="self-start whitespace-nowrap md:ml-6 md:self-auto md:shrink-0">
-                        <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                          <svg
-                            aria-hidden="true"
-                            viewBox="0 0 24 24"
-                            className="h-3.5 w-3.5 text-slate-500"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M8 6V4m8 2V4M3.5 9.5h17m-15.5 0v8a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-8M6.5 12.5h3m-3 3h3m3-3h3m-3 3h3"
-                            />
-                          </svg>
-                          {post.date}
-                        </span>
+                      <time className="shrink-0 text-xs text-[var(--muted)] sm:ml-8 sm:pt-1">
+                        {post.date}
                       </time>
-                    </Card>
-                  </a>
+                    </div>
+                  </Link>
                 ))
               ) : (
-                <Card>
-                  <p className="text-sm text-muted">No blog posts yet. Check back soon.</p>
-                </Card>
+                <p className="py-12 text-center text-sm text-[var(--muted)]">
+                  No blog posts yet. Check back soon.
+                </p>
               )}
             </div>
           </MotionWrap>
         </Section>
       </main>
+      <ScrollToTop />
     </div>
   );
 }

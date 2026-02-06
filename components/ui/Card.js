@@ -4,7 +4,7 @@ export function Card({ children, className }) {
   return (
     <div
       className={cn(
-        "surface rounded-3xl p-6 transition duration-300 hover:border-emerald-400/40 hover:shadow-emerald-400/10",
+        "surface rounded-2xl p-4 transition-colors duration-200 hover:border-[var(--accent)]/30 sm:p-6",
         className
       )}
     >
