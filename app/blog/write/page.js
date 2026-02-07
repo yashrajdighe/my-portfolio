@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
+import {
+  IMPORT_STORAGE_KEY,
+  inputClasses,
+  labelClasses,
+  normalizeImportedPost,
+} from "@/lib/blog-editor";
 
 const slugify = (value) =>
   value
@@ -14,46 +20,12 @@ const slugify = (value) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-const inputClasses =
-  "w-full rounded-2xl border border-slate-700 bg-slate-900/50 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400/40";
-
-const labelClasses = "text-xs font-semibold uppercase tracking-[0.2em] text-muted";
-
 const TinyMCEEditor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
   { ssr: false }
 );
 
 const TINYMCE_CDN = "https://cdn.jsdelivr.net/npm/tinymce@8.3.2/tinymce.min.js";
-const IMPORT_STORAGE_KEY = "blog-import-payload";
-
-const normalizeImportedPost = (payload) => {
-  if (!payload || typeof payload !== "object") {
-    throw new Error("Invalid JSON payload.");
-  }
-  const requiredFields = ["slug", "title", "date", "excerpt", "content"];
-  requiredFields.forEach((field) => {
-    if (!payload[field]) {
-      throw new Error(`Missing required field: ${field}`);
-    }
-  });
-  if (payload.tags && !Array.isArray(payload.tags)) {
-    throw new Error("Tags must be an array.");
-  }
-  if (typeof payload.content !== "string") {
-    throw new Error("Content must be a string.");
-  }
-  return {
-    slug: payload.slug,
-    title: payload.title,
-    date: payload.date,
-    excerpt: payload.excerpt,
-    content: payload.content,
-    tags: Array.isArray(payload.tags) ? payload.tags : [],
-    coverImage: payload.coverImage || "",
-    starred: Boolean(payload.starred),
-  };
-};
 
 export default function BlogWritePage() {
   const [title, setTitle] = useState("");
@@ -164,8 +136,8 @@ export default function BlogWritePage() {
   };
 
   return (
-    <div className="min-h-screen blog-shell">
-      <main className="mx-auto flex w-full max-w-5xl flex-col px-6 pb-24 pt-16 md:px-10">
+    <div className="flex-1">
+      <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">
         <Section className="pt-0">
           <MotionWrap>
             <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -248,14 +220,14 @@ export default function BlogWritePage() {
                     onChange={(event) => setCoverImage(event.target.value)}
                   />
                 </label>
-                <label className="mt-2 flex items-center gap-3 text-sm text-slate-200">
+                <label className="mt-2 flex items-center gap-3 text-sm text-[var(--foreground)]">
                   <input
                     type="checkbox"
                     checked={starred}
                     onChange={(event) => setStarred(event.target.checked)}
-                    className="h-4 w-4 rounded border-slate-700 bg-slate-900/60 text-emerald-400 accent-emerald-400 focus:ring-2 focus:ring-emerald-400/40"
+                    className="h-4 w-4 rounded border-[var(--border)] bg-[var(--surface)] accent-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/40"
                   />
-                  Mark as starred (show in Technical Deep Dives)
+                  Mark as starred (show on homepage)
                 </label>
               </Card>
               <Card className="space-y-4">
@@ -295,14 +267,14 @@ export default function BlogWritePage() {
                       "quicktable image media codesample | bullist numlist | link",
                     quickbars_selection_toolbar:
                       "bold italic underline | quicklink h2 h3 blockquote",
-                    skin: "oxide-dark",
-                    content_css: "dark",
+                    skin: "oxide",
+                    content_css: "default",
                     branding: false,
                     promotion: false,
                     license_key: "gpl",
                   }}
                 />
-                {error ? <p className="text-sm text-rose-300">{error}</p> : null}
+                {error ? <p className="text-sm text-red-600">{error}</p> : null}
                 <div className="flex w-full flex-wrap items-center justify-between gap-3">
                   <Button onClick={handleReset} variant="secondary">
                     Reset form

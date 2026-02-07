@@ -1,5 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/Footer";
+import { JsonLd, personSchema, webSiteSchema } from "@/lib/jsonLd";
+import { getBasics } from "@/lib/resume";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,15 +16,40 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+const siteDescription =
+  "Engineering scalable platforms, developer golden paths, and Kubernetes infrastructure with modern IaC.";
+
 export const metadata = {
   metadataBase: new URL("https://yashrajdighe.in"),
-  title: "Yashraj Dighe | Senior Cloud/Platform Engineer",
-  description:
-    "Engineering scalable platforms, developer golden paths, and Kubernetes infrastructure with modern IaC.",
+  title: {
+    template: "%s | Yashraj Dighe",
+    default: "Yashraj Dighe | Senior Cloud/Platform Engineer",
+  },
+  description: siteDescription,
+  authors: [{ name: "Yashraj Dighe", url: "https://yashrajdighe.in" }],
+  keywords: [
+    "Yashraj Dighe",
+    "Senior Cloud Engineer",
+    "Platform Engineer",
+    "DevOps Engineer",
+    "Kubernetes",
+    "AWS",
+    "Infrastructure as Code",
+    "Terraform",
+    "CI/CD",
+    "Cloud Architecture",
+    "Site Reliability Engineering",
+    "SRE",
+    "Platform Engineering",
+    "Golden Path",
+    "Developer Experience",
+  ],
+  alternates: {
+    canonical: "https://yashrajdighe.in/",
+  },
   openGraph: {
     title: "Yashraj Dighe | Senior Cloud/Platform Engineer",
-    description:
-      "Engineering scalable platforms, developer golden paths, and Kubernetes infrastructure with modern IaC.",
+    description: siteDescription,
     url: "https://yashrajdighe.in",
     siteName: "Yashraj Dighe Portfolio",
     images: [
@@ -38,20 +66,26 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Yashraj Dighe | Senior Cloud/Platform Engineer",
-    description:
-      "Engineering scalable platforms, developer golden paths, and Kubernetes infrastructure with modern IaC.",
+    description: siteDescription,
     images: ["/og.png"],
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const basics = await getBasics();
+
   return (
     <html lang="en">
+      <head>
+        <JsonLd data={personSchema(basics)} />
+        <JsonLd data={webSiteSchema()} />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
         suppressHydrationWarning
       >
         {children}
+        <Footer />
       </body>
     </html>
   );

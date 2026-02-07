@@ -1,278 +1,139 @@
+import Link from "next/link";
 import { getResume } from "@/lib/resume";
-import { getBlogPosts } from "@/lib/blog";
-import { Badge } from "@/components/ui/Badge";
+import { getStarredBlogPosts } from "@/lib/blog";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import LiveResume from "@/components/LiveResume";
 import MotionWrap from "@/components/MotionWrap";
-import ResumeDownload from "@/components/ResumeDownload";
-import CopyResumeLink from "@/components/CopyResumeLink";
-import { getLastUpdated } from "@/lib/lastUpdated";
+
 import ScrollToTop from "@/components/ScrollToTop";
-import ProjectStarSection from "@/components/ProjectStarSection";
+import Nav from "@/components/Nav";
 
 export default async function Home() {
   const resume = await getResume();
-  const {
-    basics,
-    summary,
-    impactStats,
-    work,
-    projects,
-    stack,
-    certifications,
-    contact,
-  } = resume;
-  const linkedIn = basics.profiles.find((profile) => profile.network === "LinkedIn");
-  const githubAccounts = basics.githubAccounts ?? [];
-  const lastUpdated = getLastUpdated();
-  const starredBlogs = (await getBlogPosts({ includeDetails: true })).filter(
-    (post) => post.starred,
-  );
+  const { basics, summary, impactStats } = resume;
+  const starredBlogs = await getStarredBlogPosts();
 
   return (
-    <div className="min-h-screen">
-      <main className="mx-auto flex w-full max-w-6xl flex-col px-6 pb-24 pt-16 md:px-10">
-        <header className="flex flex-col gap-10 md:gap-14">
-          <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.3em] text-emerald-300/70">
-            <span>{basics.label}</span>
-            <span className="h-1 w-1 rounded-full bg-emerald-300/60" />
-            <span>{basics.location.region}</span>
-          </div>
-          <MotionWrap className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="flex flex-col gap-6">
-              <h1 className="text-3xl font-semibold text-slate-50 md:text-5xl">
-                {basics.headline}
-              </h1>
-              <p className="text-lg text-slate-300 md:text-xl">
-                {basics.subheadline}
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <Button href="#resume">View Live Resume</Button>
-                <ResumeDownload label={resume.resumeDownload.label} />
-                <CopyResumeLink />
-                <Button href="/blogs" variant="secondary">
-                  Read Blogs
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-3 text-sm text-muted">
-                <span>{basics.email}</span>
-                <span className="h-1 w-1 rounded-full bg-slate-600" />
-                <span>{basics.phone}</span>
-              </div>
-              {githubAccounts.length ? (
-                <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
-                  <span className="uppercase tracking-[0.2em] text-slate-500">GitHub</span>
-                  {githubAccounts.map((account, index) => (
-                    <span key={account.username} className="flex items-center gap-2">
-                      <span className="h-1 w-1 rounded-full bg-slate-600" />
-                      <a
-                        href={`${account.url}`}
-                        className="hover:text-emerald-100"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {account.username}
-                      </a>
-                    </span>
-                  ))}
-                </div>
-              ) : null}
+    <div className="flex-1">
+      <Nav name={basics.name} />
+
+      <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">
+        {/* Hero */}
+        <header className="flex flex-col gap-4 pt-8 sm:gap-6 md:pt-16">
+          <MotionWrap>
+            <p className="text-sm font-medium text-[var(--muted)]">{basics.label}</p>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight text-[var(--foreground)] sm:text-4xl md:text-6xl">
+              {basics.headline}
+            </h1>
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--muted)] sm:mt-4 sm:text-lg md:text-xl">
+              {basics.subheadline}
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3 sm:mt-8">
+              <Button href="/experience/">View Experience</Button>
+              <Button href="/contact/" variant="ghost">
+                Get in Touch &rarr;
+              </Button>
             </div>
-            <Card className="relative overflow-hidden">
-              <div className="mb-3 inline-flex w-fit rounded-full border border-emerald-400/40 px-3 py-1 text-xs text-emerald-200 md:absolute md:right-4 md:top-4 md:mb-0">
-                Architectural Clarity
-              </div>
-              <h3 className="text-sm uppercase tracking-[0.3em] text-emerald-300/70">
-                Platform Summary
-              </h3>
-              <div className="mt-4 space-y-3 text-sm text-slate-300">
+          </MotionWrap>
+        </header>
+
+        {/* About & Stats */}
+        <Section>
+          <MotionWrap>
+            <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-10">
+              <div className="space-y-4 text-sm leading-relaxed text-[var(--muted)] md:text-base">
                 {summary.map((item) => (
                   <p key={item}>{item}</p>
                 ))}
               </div>
-            </Card>
-          </MotionWrap>
-          <MotionWrap className="grid gap-4 md:grid-cols-3">
-            {impactStats.map((stat) => (
-              <Card key={stat.label} className="glow-ring">
-                <p className="text-2xl font-semibold text-emerald-200 md:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.3em] text-slate-400">
-                  {stat.label}
-                </p>
-              </Card>
-            ))}
-          </MotionWrap>
-        </header>
-
-        <Section id="resume">
-          <MotionWrap>
-            <SectionHeading
-              eyebrow="Live Resume"
-              title="Experience Snapshot & Delivery"
-              description="Impact-driven role summaries with the technical depth behind each outcome."
-            />
-            <LiveResume work={work} resume={resume} />
-          </MotionWrap>
-        </Section>
-
-        <Section>
-          <MotionWrap>
-            <SectionHeading
-              eyebrow="Verification"
-              title="Cloud Certifications"
-              description="Verified credentials with renewal tracking."
-            />
-            <div className="grid gap-4 md:grid-cols-2">
-              {certifications.map((cert) => (
-                <Card key={cert.name}>
-                  <div className="flex flex-wrap items-start gap-2">
-                    <h3 className="min-w-0 flex-1 text-lg font-semibold text-slate-100">
-                      {cert.name}
-                    </h3>
-                    <Badge variant="accent" className="ml-auto w-fit shrink-0">
-                      {cert.badge}
-                    </Badge>
+              {/* Stats panel - AWS dashboard widget style */}
+              <div className="grid grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-1 lg:gap-4">
+                {impactStats.map((stat) => (
+                  <div key={stat.label} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-center shadow-sm lg:text-left">
+                    <p className="text-xl font-bold text-[var(--accent)] sm:text-2xl">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-[11px] text-[var(--muted)] sm:text-xs">
+                      {stat.label}
+                    </p>
                   </div>
-                  <p className="mt-2 text-sm text-muted">{cert.issuer}</p>
-                  <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-400">
-                    <span>Issued: {cert.date}</span>
-                    <span>Expires: {cert.expiry}</span>
-                  </div>
-                  <a
-                    className="mt-4 inline-flex text-sm text-emerald-200 hover:text-emerald-100"
-                    href={cert.verifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Verify credential
-                  </a>
-                </Card>
-              ))}
+                ))}
+              </div>
             </div>
           </MotionWrap>
         </Section>
 
-        <Section>
-          <ProjectStarSection projects={projects} />
-        </Section>
-
+        {/* Quick-nav cards — AWS Console service dashboard style */}
         <Section>
           <MotionWrap>
             <SectionHeading
-              eyebrow="Categorized Stack"
-              title="Provisioning, Orchestration, Observability"
-              description="A curated toolbelt aligned to platform reliability."
+              eyebrow="Console"
+              title="Quick Navigation"
             />
-            <div className="grid gap-4 md:grid-cols-3">
-              {Object.entries(stack).map(([category, tools]) => (
-                <Card key={category}>
-                  <p className="text-xs uppercase tracking-[0.3em] text-emerald-300/70">
-                    {category}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {tools.map((tool) => (
-                      <Badge key={tool}>{tool}</Badge>
-                    ))}
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </MotionWrap>
-        </Section>
-
-        <Section>
-          <MotionWrap>
-            <SectionHeading
-              eyebrow="Engineering Lab"
-              title="Technical Deep Dives"
-              description="Minimalist notes on performance, platform patterns, and golden paths."
-            />
-            <div className="grid gap-3">
-              {starredBlogs.map((post) => (
-                <a
-                  key={post.slug}
-                  href={`/blog/${post.slug}/`}
-                  className="group"
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+              {[
+                { label: "Experience", href: "/experience/", desc: "Work history and impact" },
+                { label: "Projects", href: "/projects/", desc: "Architecture & delivery in STAR format" },
+                { label: "Tech Stack", href: "/stack/", desc: "Tools & technologies" },
+                { label: "Certifications", href: "/certifications/", desc: "Verified credentials" },
+                { label: "Blog", href: "/blogs/", desc: "Technical deep dives & notes" },
+                { label: "Contact", href: "/contact/", desc: "Get in touch" },
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="group rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5"
                 >
-                  <Card className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-semibold text-slate-100 group-hover:text-emerald-100">
-                        {post.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-muted">{post.excerpt}</p>
-                    </div>
-                    <span className="hidden sm:inline-flex">
-                      <Badge variant="subtle" className="whitespace-nowrap">
-                        {post.date}
-                      </Badge>
-                    </span>
-                  </Card>
-                </a>
+                  <h3 className="text-sm font-semibold text-[var(--link)] group-hover:underline">
+                    {item.label}
+                  </h3>
+                  <p className="mt-1 text-xs text-[var(--muted)]">{item.desc}</p>
+                </Link>
               ))}
             </div>
           </MotionWrap>
         </Section>
 
-        <Section id="contact">
-          <MotionWrap>
-            <SectionHeading
-              eyebrow="Get In Touch"
-              title="Let’s Build Something Reliable"
-              description="Fastest way to reach me is email or LinkedIn. Share a short brief and I’ll respond within 24–48 hours."
-            />
-            <Card className="grid gap-4 md:grid-cols-2">
-              <div className="flex h-full flex-col">
-                <p className="text-sm text-slate-300">
-                  Prefer a simple path? Use the buttons below or reply with the
-                  essentials: project goal, timeframe, and current stack.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Button href={`mailto:${basics.email}`} variant="primary">
-                    Email {basics.email}
-                  </Button>
-                  {linkedIn ? (
-                    <Button href={linkedIn.url} variant="secondary">
-                      Message on LinkedIn
-                    </Button>
-                  ) : null}
-                </div>
-                <div className="mt-5 flex flex-wrap gap-3 text-sm text-muted">
-                  <span>{contact.availability}</span>
-                  <span className="h-1 w-1 rounded-full bg-slate-600" />
-                  <span>{contact.timezone}</span>
-                </div>
-              </div>
-              <div className="flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-xs text-slate-300">
-                <p className="text-emerald-200">Book a quick call</p>
-                <p className="mt-2 text-xs text-muted">
-                  Use Google Calendar to grab a slot for an intro and technical
-                  alignment.
-                </p>
-                <div className="mt-4 space-y-2 text-xs text-slate-400">
-                  <p>15–30 min focused sync</p>
-                  <p>Walk through scope, goals, and constraints</p>
-                  <p>Timezone: {contact.timezone}</p>
-                </div>
-                <div className="mt-5">
-                  <Button
-                    href="https://calendar.app.google/FVusmLYUTdkxdEKQA"
-                    variant="primary"
+        {/* Featured Blog Posts */}
+        {starredBlogs.length > 0 && (
+          <Section>
+            <MotionWrap>
+              <SectionHeading
+                eyebrow="Featured"
+                title="From the Blog"
+                description="Recent technical deep dives and operational notes."
+              />
+              <div className="divide-y divide-[var(--border)] rounded-lg border border-[var(--border)] bg-[var(--surface)]">
+                {starredBlogs.map((post) => (
+                  <Link
+                    key={post.slug}
+                    href={`/blog/${post.slug}/`}
+                    className="group block"
                   >
-                    Schedule via Google Calendar
-                  </Button>
-                </div>
+                    <div className="flex items-start justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-[#F2F3F3] sm:px-5">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-medium text-[var(--link)] group-hover:underline">
+                          {post.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-[var(--muted)]">{post.excerpt}</p>
+                      </div>
+                      <span className="hidden shrink-0 pt-0.5 text-xs text-[var(--muted)] sm:block">
+                        {post.date}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </Card>
-          </MotionWrap>
-        </Section>
+              <div className="mt-6">
+                <Button href="/blogs/" variant="ghost" size="sm">
+                  View all posts &rarr;
+                </Button>
+              </div>
+            </MotionWrap>
+          </Section>
+        )}
 
-        <footer className="mt-4 text-xs text-muted">
-          Last updated {lastUpdated}
-        </footer>
+
       </main>
       <ScrollToTop />
     </div>

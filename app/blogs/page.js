@@ -1,69 +1,106 @@
+import Link from "next/link";
 import { getBlogPosts } from "@/lib/blog";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Section, SectionHeading } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
+import Nav from "@/components/Nav";
+import ScrollToTop from "@/components/ScrollToTop";
+import { JsonLd, blogListSchema, breadcrumbSchema } from "@/lib/jsonLd";
+
+export const metadata = {
+  title: "Blog",
+  description:
+    "Technical blog by Yashraj Dighe — deep dives into cloud engineering, Kubernetes, AWS, CI/CD, platform engineering, and operational lessons.",
+  alternates: { canonical: "/blogs/" },
+  openGraph: { url: "/blogs/" },
+};
 
 export default async function BlogPage() {
   const posts = await getBlogPosts();
 
   return (
-    <div className="min-h-screen blog-shell">
-      <main className="mx-auto flex w-full max-w-4xl flex-col px-6 pb-24 pt-16 md:px-10">
-        <Section className="pt-0">
+    <div className="flex-1">
+      <JsonLd data={breadcrumbSchema([{ name: "Home", href: "/" }, { name: "Blog", href: "/blogs/" }])} />
+      <JsonLd data={blogListSchema(posts)} />
+      <Nav />
+
+      <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">
+        <Section className="pt-4 sm:pt-8">
           <MotionWrap>
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-4 sm:mb-8">
-              <SectionHeading
-                eyebrow="Blog"
-                title="Platform Notes & Field Logs"
-                description="Technical deep dives and operational lessons captured in short, skimmable entries."
-              />
-              <Button href="/" variant="secondary" size="sm" className="ml-auto self-start">
-                Back to Portfolio
-              </Button>
+            {/* Breadcrumb — AWS Docs style */}
+            <nav aria-label="Breadcrumb" className="mb-6 text-xs text-[var(--muted)]">
+              <ol className="flex items-center gap-1.5">
+                <li>
+                  <Link href="/" className="text-[var(--link)] hover:underline">
+                    Home
+                  </Link>
+                </li>
+                <li aria-hidden="true" className="text-[var(--border)]">/</li>
+                <li>
+                  <span className="text-[var(--foreground)] font-medium">Blogs</span>
+                </li>
+              </ol>
+            </nav>
+
+            {/* Page header — AWS Docs style */}
+            <div className="mb-8 border-b border-[var(--border)] pb-6">
+              <h1 className="text-2xl font-bold text-[var(--foreground)] sm:text-3xl">
+                Technical Notes
+              </h1>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
+                Deep dives and operational lessons in short, skimmable entries.
+              </p>
             </div>
-            <div className="grid gap-4">
+
+            {/* Post listing — AWS Docs style */}
+            <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-sm">
+              {/* Table header */}
+              <div className="hidden border-b border-[var(--border)] bg-[#F2F3F3] px-5 py-2.5 sm:flex">
+                <span className="flex-1 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                  Title
+                </span>
+                <span className="w-28 shrink-0 text-right text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                  Date
+                </span>
+              </div>
+
               {posts.length ? (
-                posts.map((post) => (
-                  <a key={post.slug} href={`/blog/${post.slug}/`} className="group">
-                    <Card className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
-                      <div className="md:min-w-0 md:flex-1">
-                        <h3 className="text-base font-semibold text-slate-100 group-hover:text-emerald-100 sm:text-lg">
-                          {post.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-muted sm:text-base">{post.excerpt}</p>
-                      </div>
-                      <time className="self-start whitespace-nowrap md:ml-6 md:self-auto md:shrink-0">
-                        <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                          <svg
-                            aria-hidden="true"
-                            viewBox="0 0 24 24"
-                            className="h-3.5 w-3.5 text-slate-500"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M8 6V4m8 2V4M3.5 9.5h17m-15.5 0v8a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-8M6.5 12.5h3m-3 3h3m3-3h3m-3 3h3"
-                            />
-                          </svg>
+                <div className="divide-y divide-[var(--border)]">
+                  {posts.map((post) => (
+                    <Link key={post.slug} href={`/blog/${post.slug}/`} className="group block">
+                      <div className="flex flex-col gap-1 px-4 py-4 transition-colors hover:bg-[#F2F3F3] sm:flex-row sm:items-start sm:gap-4 sm:px-5">
+                        <div className="min-w-0 sm:flex-1">
+                          <h3 className="text-sm font-medium text-[var(--link)] group-hover:underline">
+                            {post.title}
+                          </h3>
+                          <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
+                            {post.excerpt}
+                          </p>
+                        </div>
+                        <time className="shrink-0 text-xs text-[var(--muted)] sm:w-28 sm:pt-0.5 sm:text-right">
                           {post.date}
-                        </span>
-                      </time>
-                    </Card>
-                  </a>
-                ))
+                        </time>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               ) : (
-                <Card>
-                  <p className="text-sm text-muted">No blog posts yet. Check back soon.</p>
-                </Card>
+                <p className="py-12 text-center text-sm text-[var(--muted)]">
+                  No blog posts yet. Check back soon.
+                </p>
               )}
+            </div>
+
+            {/* Back link */}
+            <div className="mt-8">
+              <Button href="/" variant="ghost" size="sm">
+                &larr; Back to Portfolio
+              </Button>
             </div>
           </MotionWrap>
         </Section>
       </main>
+      <ScrollToTop />
     </div>
   );
 }

@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0f14;
-  --foreground: #e5e7eb;
-  --muted: #9ca3af;
-  --surface: #0f172a;
-  --surface-2: #0b1220;
-  --border: #1f2937;
-  --accent: #10b981;
-  --accent-2: #0ea5e9;
+  --background: #F2F3F3;
+  --foreground: #16191F;
+  --muted: #545B64;
+  --surface: #FFFFFF;
+  --border: #D5DBDB;
+  --accent: #FF9900;
+  --accent-hover: #EC7211;
+  --link: #0073BB;
+  --nav-bg: #232F3E;
+  --nav-text: #FFFFFF;
+  --success: #1D8102;
 }
 
 @theme inline {
@@ -18,46 +21,66 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans, ui-sans-serif, system-ui, -apple-system);
-  background-image:
-    radial-gradient(800px 400px at 12% -10%, rgba(16, 185, 129, 0.2), transparent 60%),
-    radial-gradient(900px 500px at 85% 0%, rgba(14, 165, 233, 0.12), transparent 55%),
-    linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
-  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
 }
 
 ::selection {
-  background: rgba(16, 185, 129, 0.35);
-  color: #f8fafc;
+  background: rgba(0, 115, 187, 0.15);
+  color: #16191F;
+}
+
+/* Fade-in-up animation for MotionWrap */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @layer utilities {
-  .blog-shell {
-    background-color: var(--background);
-    background-image:
-      radial-gradient(800px 400px at 12% -10%, rgba(16, 185, 129, 0.2), transparent 60%),
-      radial-gradient(900px 500px at 85% 0%, rgba(14, 165, 233, 0.12), transparent 55%);
-  }
-
   .surface {
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(11, 18, 32, 0.9));
+    background-color: var(--surface);
     border: 1px solid var(--border);
-    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.6), 0 20px 60px rgba(3, 7, 18, 0.35);
   }
 
   .text-muted {
     color: var(--muted);
   }
 
-  .glow-ring {
-    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25), 0 0 35px rgba(16, 185, 129, 0.2);
+  .fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
   }
 
+  .fade-in-up-delay-1 {
+    animation-delay: 0.1s;
+  }
+
+  .fade-in-up-delay-2 {
+    animation-delay: 0.2s;
+  }
+
+  .fade-in-up-delay-3 {
+    animation-delay: 0.3s;
+  }
+
+  /* Blog content typography — AWS Docs style */
+  .blog-content {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    color: var(--foreground);
+  }
 
   .blog-content > * + * {
     margin-top: 1.25rem;
@@ -67,14 +90,16 @@ body {
     margin-top: 2rem;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #e2e8f0;
+    color: var(--foreground);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
   }
 
   .blog-content h3 {
     margin-top: 1.5rem;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #e2e8f0;
+    color: var(--foreground);
   }
 
   .blog-content ul,
@@ -96,22 +121,32 @@ body {
   }
 
   .blog-content a {
-    color: #5eead4;
+    color: var(--link);
+    text-decoration: none;
+  }
+
+  .blog-content a:hover {
     text-decoration: underline;
-    text-underline-offset: 3px;
+    color: #005ea2;
   }
 
   .blog-content code {
-    padding: 0.1rem 0.35rem;
-    border-radius: 0.4rem;
-    background: rgba(15, 23, 42, 0.8);
-    color: #e2e8f0;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    background: #F2F3F3;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    font-size: 0.9em;
+    word-break: break-all;
   }
 
   .blog-content blockquote {
-    border-left: 3px solid rgba(94, 234, 212, 0.5);
+    border-left: 3px solid var(--accent);
     padding-left: 1rem;
-    color: #cbd5f5;
+    color: var(--muted);
+    background: #FAFAFA;
+    padding: 0.75rem 1rem;
+    border-radius: 0 0.25rem 0.25rem 0;
   }
 
   .blog-content img,
@@ -136,9 +171,10 @@ body {
   }
 
   .blog-content thead th {
-    background: rgba(15, 23, 42, 0.85);
-    color: #e2e8f0;
+    background: #F2F3F3;
+    color: var(--foreground);
     text-align: left;
+    font-weight: 600;
   }
 
   .blog-content th,
@@ -149,15 +185,24 @@ body {
   }
 
   .blog-content tbody tr:nth-child(even) {
-    background: rgba(15, 23, 42, 0.35);
+    background: #FAFAFA;
   }
 
   .blog-content pre {
     overflow-x: auto;
-    border-radius: 0.75rem;
-    background: rgba(15, 23, 42, 0.9);
+    border-radius: 0.5rem;
+    background: #1B2A3E;
+    border: 1px solid #37475A;
     padding: 1rem;
-    color: #e2e8f0;
+    color: #D5DBDB;
+  }
+
+  .blog-content pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
   }
 
   .blog-content hr {
