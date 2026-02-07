@@ -13,7 +13,17 @@ const withTrailingSlash = (path) => {
 
 export default async function sitemap() {
   const now = new Date();
-  const staticRoutes = ["", "/blogs", "/blog", "/resume"];
+  const staticRoutes = [
+    "",
+    "/experience",
+    "/projects",
+    "/stack",
+    "/certifications",
+    "/contact",
+    "/blogs",
+    "/blog",
+    "/resume",
+  ];
   const blogPosts = await getBlogPosts();
 
   return [
@@ -21,7 +31,7 @@ export default async function sitemap() {
       url: `${baseUrl}${withTrailingSlash(route)}`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: route === "" ? 1 : 0.6,
+      priority: route === "" ? 1 : 0.7,
     })),
     ...blogPosts.map((post) => ({
       url: `${baseUrl}${withTrailingSlash(`/blog/${post.slug}`)}`,

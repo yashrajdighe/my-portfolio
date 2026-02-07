@@ -8,7 +8,7 @@ export default function ResumeRedirect() {
   }, []);
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-6 text-center text-slate-200">
+    <div className="mx-auto flex flex-1 max-w-2xl flex-col items-center justify-center px-6 text-center text-slate-200">
       <p className="text-sm text-slate-300">Redirecting to the resume PDF…</p>
       <a
         className="mt-4 text-sm text-emerald-200 hover:text-emerald-100"

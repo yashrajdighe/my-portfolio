@@ -13,7 +13,7 @@ export function SectionHeading({ eyebrow, title, description, align = "left", cl
   return (
     <div className={cn("mb-8 flex flex-col gap-2 sm:mb-12 sm:gap-3", alignment, className)}>
       {eyebrow ? (
-        <span className="text-xs font-medium text-[var(--accent)]">
+        <span className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
           {eyebrow}
         </span>
       ) : null}

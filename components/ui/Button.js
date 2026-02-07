@@ -2,15 +2,15 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const base =
-  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]";
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]";
 
 const variants = {
   primary:
-    "bg-[var(--accent)] text-zinc-950 hover:bg-[var(--accent)]/85",
+    "bg-[var(--accent)] text-[#16191F] font-semibold hover:bg-[var(--accent-hover)] shadow-sm",
   ghost:
-    "text-[var(--muted)] hover:text-[var(--foreground)]",
+    "text-[var(--link)] hover:text-[#005ea2] hover:underline",
   secondary:
-    "border border-[var(--border)] text-[var(--foreground)] hover:border-[var(--accent)]/40 hover:text-[var(--accent)]",
+    "border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] hover:border-[var(--link)] hover:text-[var(--link)] shadow-sm",
 };
 
 const sizes = {
@@ -29,11 +29,26 @@ export function Button({
   size = "md",
   className,
   href,
+  download,
   ...props
 }) {
   const classes = cn(base, variants[variant], sizes[size], className);
 
   if (href) {
+    // Download links always use a plain <a> (not Next.js <Link>).
+    if (download !== undefined) {
+      return (
+        <a
+          className={classes}
+          href={href}
+          download={download}
+          {...props}
+        >
+          {children}
+        </a>
+      );
+    }
+
     // Internal path links → next/link for client-side navigation
     if (isInternalPath(href)) {
       return (

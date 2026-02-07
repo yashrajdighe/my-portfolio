@@ -12,7 +12,7 @@ const renderStarContent = (detail) => {
       <div className="mt-1.5 space-y-1.5">
         {detail.map((item, index) => (
           <div key={`${index}-${item}`} className="flex gap-2.5">
-            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-zinc-600" />
+            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--muted)]" />
             <p>{item}</p>
           </div>
         ))}
@@ -75,13 +75,13 @@ function ProjectCard({ project }) {
         <div className="mt-4 grid gap-4 text-sm leading-relaxed text-[var(--muted)] sm:mt-6 sm:gap-5 md:grid-cols-2 md:gap-8">
           <div className="space-y-5">
             <div>
-              <p className="text-xs font-medium text-[var(--foreground)]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
                 Situation
               </p>
               {renderStarContent(project.situation)}
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--foreground)]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
                 Task
               </p>
               {renderStarContent(project.task)}
@@ -89,13 +89,13 @@ function ProjectCard({ project }) {
           </div>
           <div className="space-y-5">
             <div>
-              <p className="text-xs font-medium text-[var(--foreground)]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
                 Action
               </p>
               {renderStarContent(project.action)}
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--foreground)]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
                 Result
               </p>
               {renderStarContent(project.result)}
