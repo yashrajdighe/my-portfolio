@@ -7,40 +7,12 @@ import { Card } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
 
-const IMPORT_STORAGE_KEY = "blog-import-payload";
-
-const inputClasses =
-  "w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40";
-
-const labelClasses = "text-xs font-medium text-[var(--muted)]";
-
-const normalizeImportedPost = (payload) => {
-  if (!payload || typeof payload !== "object") {
-    throw new Error("Invalid JSON payload.");
-  }
-  const requiredFields = ["slug", "title", "date", "excerpt", "content"];
-  requiredFields.forEach((field) => {
-    if (!payload[field]) {
-      throw new Error(`Missing required field: ${field}`);
-    }
-  });
-  if (payload.tags && !Array.isArray(payload.tags)) {
-    throw new Error("Tags must be an array.");
-  }
-  if (typeof payload.content !== "string") {
-    throw new Error("Content must be a string.");
-  }
-  return {
-    slug: payload.slug,
-    title: payload.title,
-    date: payload.date,
-    excerpt: payload.excerpt,
-    content: payload.content,
-    tags: Array.isArray(payload.tags) ? payload.tags : [],
-    coverImage: payload.coverImage || "",
-    starred: Boolean(payload.starred),
-  };
-};
+import {
+  IMPORT_STORAGE_KEY,
+  inputClasses,
+  labelClasses,
+  normalizeImportedPost,
+} from "@/lib/blog-editor";
 
 export default function BlogImportPage() {
   const router = useRouter();
@@ -75,8 +47,8 @@ export default function BlogImportPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <main className="mx-auto flex w-full max-w-4xl flex-col px-4 pb-20 pt-20 sm:px-6 md:px-10 md:pb-24 md:pt-24">
+    <div className="flex-1">
+      <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">
         <Section className="pt-0">
           <MotionWrap>
             <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -105,7 +77,7 @@ export default function BlogImportPage() {
                     onChange={handleFileChange}
                   />
                   {fileName ? (
-                    <p className="text-xs text-muted">Loaded: {fileName}</p>
+                    <p className="text-xs text-[var(--muted)]">Loaded: {fileName}</p>
                   ) : null}
                 </div>
                 <label className="space-y-2">
@@ -118,7 +90,7 @@ export default function BlogImportPage() {
                     onChange={(event) => setJsonInput(event.target.value)}
                   />
                 </label>
-                {error ? <p className="text-sm text-rose-300">{error}</p> : null}
+                {error ? <p className="text-sm text-red-600">{error}</p> : null}
                 <div className="flex w-full flex-wrap items-center justify-end gap-3">
                   <Button onClick={handleImport}>Import &amp; Continue</Button>
                 </div>

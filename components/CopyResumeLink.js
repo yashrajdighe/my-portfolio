@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const base =
-  "inline-flex cursor-pointer items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface)] p-2 text-[var(--muted)] transition-colors hover:border-[var(--accent)]/40 hover:text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50";
+  "inline-flex cursor-pointer items-center justify-center rounded border border-[var(--border)] bg-[var(--surface)] p-2 text-[var(--muted)] transition-colors hover:border-[var(--link)] hover:text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50";
 
 export default function CopyResumeLink({ href = "/resume.pdf", className }) {
   const [copied, setCopied] = useState(false);
@@ -31,7 +31,7 @@ export default function CopyResumeLink({ href = "/resume.pdf", className }) {
       {copied ? (
         <svg
           viewBox="0 0 20 20"
-          className="h-4 w-4 text-[var(--accent)]"
+          className="h-4 w-4 text-[var(--success)]"
           fill="currentColor"
           aria-hidden="true"
         >

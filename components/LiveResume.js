@@ -32,7 +32,7 @@ function RoleCard({ role }) {
           <p className="mt-0.5 text-sm text-[var(--muted)]">
             {role.name}
             {role.location ? (
-              <span className="text-zinc-500"> &middot; {role.location}</span>
+              <span className="text-[var(--muted)]/70"> &middot; {role.location}</span>
             ) : null}
           </p>
         </div>
@@ -64,8 +64,8 @@ function RoleCard({ role }) {
       </p>
 
       {/* Key Impact -- always visible, highlighted */}
-      <div className="mt-3 border-l-2 border-[var(--accent)]/40 pl-3">
-        <p className="text-sm leading-relaxed text-[var(--foreground)]/80 italic">
+      <div className="mt-3 border-l-3 border-[var(--accent)] pl-3">
+        <p className="text-sm leading-relaxed text-[var(--muted)] italic">
           {role.keyImpact}
         </p>
       </div>
@@ -84,7 +84,7 @@ function RoleCard({ role }) {
           <div className="mt-5 space-y-2.5 text-sm leading-relaxed text-[var(--muted)]">
             {role.highlights.map((item) => (
               <div key={item} className="flex gap-3">
-                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]/50" />
+                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
                 <p>{item}</p>
               </div>
             ))}
@@ -96,29 +96,74 @@ function RoleCard({ role }) {
 }
 
 export default function LiveResume({ work, resumeDownload }) {
-  const careerStart = new Date("2021-10-04");
   const now = new Date();
-  const totalMonths =
-    now.getFullYear() * 12 +
-    now.getMonth() -
-    (careerStart.getFullYear() * 12 + careerStart.getMonth());
-  const years = Math.max(0, Math.floor(totalMonths / 12));
-  const months = Math.max(0, totalMonths % 12);
-  const experienceLabel = `${years} year${years === 1 ? "" : "s"} ${
-    months
-  } month${months === 1 ? "" : "s"}`;
+
+  const MONTHS = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+
+  const parseDate = (dateStr) => {
+    if (dateStr === "Present") return now;
+    const [mon, year] = dateStr.split(" ");
+    return new Date(parseInt(year), MONTHS[mon]);
+  };
+
+  const monthsBetween = (start, end) =>
+    end.getFullYear() * 12 + end.getMonth() - (start.getFullYear() * 12 + start.getMonth());
+
+  const formatDuration = (totalMonths) => {
+    const y = Math.max(0, Math.floor(totalMonths / 12));
+    const m = Math.max(0, totalMonths % 12);
+    if (y === 0) return `${m} month${m === 1 ? "" : "s"}`;
+    return `${y} year${y === 1 ? "" : "s"} ${m} month${m === 1 ? "" : "s"}`;
+  };
+
+  // Separate professional and internship roles
+  const internRoles = work.filter((r) => /intern/i.test(r.position));
+  const professionalRoles = work.filter((r) => !/intern/i.test(r.position));
+
+  // Professional experience: earliest professional start date to now
+  let professionalMonths = 0;
+  if (professionalRoles.length > 0) {
+    const earliest = professionalRoles.reduce((min, r) => {
+      const d = parseDate(r.startDate);
+      return d < min ? d : min;
+    }, parseDate(professionalRoles[0].startDate));
+    professionalMonths = monthsBetween(earliest, now);
+  }
+
+  // Internship: sum of each internship role's duration (inclusive of end month)
+  let internshipMonths = 0;
+  for (const role of internRoles) {
+    const duration = monthsBetween(parseDate(role.startDate), parseDate(role.endDate));
+    // +1 to include the end month for completed roles
+    internshipMonths += role.endDate === "Present" ? duration : duration + 1;
+  }
+
+  const experienceLabel = formatDuration(professionalMonths);
+  const internshipLabel = formatDuration(internshipMonths);
 
   return (
     <div>
       {/* Experience header */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 sm:mb-8">
-        <div>
-          <p className="text-xs font-medium text-[var(--accent)]">
-            Total Experience
-          </p>
-          <p className="mt-1 text-lg font-semibold text-[var(--foreground)]">
-            {experienceLabel}
-          </p>
+        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
+              Total Experience
+            </p>
+            <p className="mt-1 text-lg font-semibold text-[var(--foreground)]">
+              {experienceLabel}
+            </p>
+          </div>
+          {internshipMonths > 0 && (
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                + Internship
+              </p>
+              <p className="mt-1 text-lg font-semibold text-[var(--muted)]">
+                {internshipLabel}
+              </p>
+            </div>
+          )}
         </div>
         {resumeDownload ? (
           <ResumeDownload
