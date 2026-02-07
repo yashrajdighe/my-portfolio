@@ -5,10 +5,14 @@ import ProjectStarSection from "@/components/ProjectStarSection";
 import MotionWrap from "@/components/MotionWrap";
 import ScrollToTop from "@/components/ScrollToTop";
 import Nav from "@/components/Nav";
+import { JsonLd, breadcrumbSchema } from "@/lib/jsonLd";
 
 export const metadata = {
-  title: "Projects | Portfolio",
-  description: "Architecture & delivery structured in S.T.A.R. format.",
+  title: "Projects",
+  description:
+    "Cloud infrastructure and platform engineering projects — architecture and delivery structured in S.T.A.R. format with Kubernetes, Terraform, and AWS.",
+  alternates: { canonical: "/projects/" },
+  openGraph: { url: "/projects/" },
 };
 
 export default async function ProjectsPage() {
@@ -17,6 +21,7 @@ export default async function ProjectsPage() {
 
   return (
     <div className="flex-1">
+      <JsonLd data={breadcrumbSchema([{ name: "Home", href: "/" }, { name: "Projects", href: "/projects/" }])} />
       <Nav name={basics.name} />
 
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">

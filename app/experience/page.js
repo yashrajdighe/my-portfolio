@@ -5,10 +5,14 @@ import LiveResume from "@/components/LiveResume";
 import MotionWrap from "@/components/MotionWrap";
 import ScrollToTop from "@/components/ScrollToTop";
 import Nav from "@/components/Nav";
+import { JsonLd, breadcrumbSchema } from "@/lib/jsonLd";
 
 export const metadata = {
-  title: "Experience | Portfolio",
-  description: "Work history, impact-driven summaries with technical depth.",
+  title: "Work Experience",
+  description:
+    "Senior Cloud/Platform Engineer work history — impact-driven summaries covering Kubernetes, AWS, Terraform, CI/CD pipelines, and platform engineering.",
+  alternates: { canonical: "/experience/" },
+  openGraph: { url: "/experience/" },
 };
 
 export default async function ExperiencePage() {
@@ -17,6 +21,7 @@ export default async function ExperiencePage() {
 
   return (
     <div className="flex-1">
+      <JsonLd data={breadcrumbSchema([{ name: "Home", href: "/" }, { name: "Experience", href: "/experience/" }])} />
       <Nav name={basics.name} />
 
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">

@@ -5,12 +5,23 @@ import { Section } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
 import Nav from "@/components/Nav";
 import ScrollToTop from "@/components/ScrollToTop";
+import { JsonLd, blogListSchema, breadcrumbSchema } from "@/lib/jsonLd";
+
+export const metadata = {
+  title: "Blog",
+  description:
+    "Technical blog by Yashraj Dighe — deep dives into cloud engineering, Kubernetes, AWS, CI/CD, platform engineering, and operational lessons.",
+  alternates: { canonical: "/blogs/" },
+  openGraph: { url: "/blogs/" },
+};
 
 export default async function BlogPage() {
   const posts = await getBlogPosts();
 
   return (
     <div className="flex-1">
+      <JsonLd data={breadcrumbSchema([{ name: "Home", href: "/" }, { name: "Blog", href: "/blogs/" }])} />
+      <JsonLd data={blogListSchema(posts)} />
       <Nav />
 
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">

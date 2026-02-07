@@ -6,10 +6,14 @@ import { Section } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
 import ScrollToTop from "@/components/ScrollToTop";
 import Nav from "@/components/Nav";
+import { JsonLd, breadcrumbSchema } from "@/lib/jsonLd";
 
 export const metadata = {
-  title: "Certifications | Portfolio",
-  description: "Verified credentials and professional certifications.",
+  title: "Certifications",
+  description:
+    "AWS, Kubernetes, and cloud certifications — verified professional credentials for senior platform engineering roles.",
+  alternates: { canonical: "/certifications/" },
+  openGraph: { url: "/certifications/" },
 };
 
 export default async function CertificationsPage() {
@@ -18,6 +22,7 @@ export default async function CertificationsPage() {
 
   return (
     <div className="flex-1">
+      <JsonLd data={breadcrumbSchema([{ name: "Home", href: "/" }, { name: "Certifications", href: "/certifications/" }])} />
       <Nav name={basics.name} />
 
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">

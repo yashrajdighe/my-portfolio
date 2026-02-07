@@ -5,10 +5,14 @@ import { Section } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
 import ScrollToTop from "@/components/ScrollToTop";
 import Nav from "@/components/Nav";
+import { JsonLd, breadcrumbSchema } from "@/lib/jsonLd";
 
 export const metadata = {
-  title: "Contact | Portfolio",
-  description: "Get in touch — email, LinkedIn, or schedule a call.",
+  title: "Contact",
+  description:
+    "Get in touch with Yashraj Dighe — email, LinkedIn, or schedule a call for cloud engineering, platform engineering, and DevOps consulting.",
+  alternates: { canonical: "/contact/" },
+  openGraph: { url: "/contact/" },
 };
 
 export default async function ContactPage() {
@@ -18,6 +22,7 @@ export default async function ContactPage() {
 
   return (
     <div className="flex-1">
+      <JsonLd data={breadcrumbSchema([{ name: "Home", href: "/" }, { name: "Contact", href: "/contact/" }])} />
       <Nav name={basics.name} />
 
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">

@@ -6,10 +6,14 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import MotionWrap from "@/components/MotionWrap";
 import ScrollToTop from "@/components/ScrollToTop";
 import Nav from "@/components/Nav";
+import { JsonLd, breadcrumbSchema } from "@/lib/jsonLd";
 
 export const metadata = {
-  title: "Tech Stack | Portfolio",
-  description: "Curated toolbelt aligned to platform reliability.",
+  title: "Tech Stack",
+  description:
+    "Tools and technologies — Kubernetes, AWS, Terraform, Docker, GitHub Actions, ArgoCD, Helm, and more. Curated toolbelt aligned to platform reliability.",
+  alternates: { canonical: "/stack/" },
+  openGraph: { url: "/stack/" },
 };
 
 export default async function StackPage() {
@@ -18,6 +22,7 @@ export default async function StackPage() {
 
   return (
     <div className="flex-1">
+      <JsonLd data={breadcrumbSchema([{ name: "Home", href: "/" }, { name: "Tech Stack", href: "/stack/" }])} />
       <Nav name={basics.name} />
 
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">
