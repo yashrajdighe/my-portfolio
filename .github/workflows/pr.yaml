@@ -16,7 +16,7 @@ jobs:
       - id: get-node-version
         run: |
           export node_version=$(jq -r '.engines.node // empty' package.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -1)
-          echo ${{ env.node_version }}
+          echo "node_version=$node_version" >> $GITHUB_ENV
       - id: setup-nodejs
         uses: actions/setup-node@v4
         with:
