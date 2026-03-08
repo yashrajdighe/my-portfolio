@@ -33,24 +33,30 @@ jobs:
     permissions:
       contents: write
     steps:
-      - id: checkout-repo
+      - name: Checkout Repository
+        id: checkout-repo
         uses: actions/checkout@v6
-      - id: get-node-version
+      - name: Get Node.js Version
+        id: get-node-version
         run: |
           export node_version=$(jq -r '.engines.node // empty' package.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -1)
           echo "node_version=$node_version" >> $GITHUB_ENV
-      - id: setup-nodejs
+      - name: Setup Node.js
+        id: setup-nodejs
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node_version }}
           cache: "npm"
-      - id: install-dependencies
+      - name: Install Dependencies
+        id: install-dependencies
         run: npm ci
-      - id: build-webapp
+      - name: Build Webapp
+        id: build-webapp
         run: |
           npm run build
           zip -r build.zip out/
-      - id: generate-release-tag
+      - name: Generate Release Tag
+        id: generate-release-tag
         run: |
           # 1. Grab the current date in YYYY.MM.DD format
           calver_date=$(date +'%Y.%m.%d')
@@ -61,7 +67,7 @@ jobs:
 
           # 3. Save it to the environment
           echo "RELEASE_TAG=$full_tag" >> $GITHUB_ENV
-      - name: Release
+      - name: Create Tag and Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
