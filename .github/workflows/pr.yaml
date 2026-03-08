@@ -1,0 +1,29 @@
+name: Pull Request Workflow
+run-name: ${{ github.actor }} running pr build and checks
+on:
+  push:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-webapp:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout-repo
+        uses: actions/checkout@v6
+      - id: get-node-version
+        run: |
+          node_version=$(jq -r '.engines.node // empty' package.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -1)
+          echo $node_version
+      - id: setup-nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: $node_version
+      - id: install-dependencies
+        run: npm i
+      - id: build-webapp
+        run: npm run build
+      - id: debug
+        run: ls -al
