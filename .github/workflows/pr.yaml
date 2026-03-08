@@ -8,7 +8,27 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - id: checkout-repo
+  #       uses: actions/checkout@v6
+  #     - id: get-node-version
+  #       run: |
+  #         export node_version=$(jq -r '.engines.node // empty' package.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -1)
+  #         echo "node_version=$node_version" >> $GITHUB_ENV
+  #     - id: setup-nodejs
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ env.node_version }}
+  #         cache: "npm"
+  #     - id: install-dependencies
+  #       run: npm ci
+  #     - id: run-es-lint
+  #       run: npm run lint
   build-webapp:
+    # needs:
+    #   - lint
     runs-on: ubuntu-latest
     steps:
       - id: checkout-repo
@@ -26,5 +46,8 @@ jobs:
         run: npm ci
       - id: build-webapp
         run: npm run build
-      - id: debug
-        run: ls -al
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        # if: github.ref_type == 'tag'
+        with:
+          files: out/
