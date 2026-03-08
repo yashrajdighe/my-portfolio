@@ -48,6 +48,7 @@ jobs:
         run: npm run build
       - name: Release
         uses: softprops/action-gh-release@v2
-        # if: github.ref_type == 'tag'
         with:
+          tag_name: "vtest-${{ github.run_id }}" # 👈 Explicitly tells GitHub what tag to use
+          name: "Test Release ${{ github.run_id }}" # (Optional) Gives the release a nice title
           files: out/
