@@ -101,6 +101,7 @@ jobs:
         with:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::672491114190:role/test-my-portfolio-deployment
+          role-session-name: portfolio-deploy-to-development
       - name: Sync to S3
         run: |
-          aws s3 sync ./out s3://playground-yashrajdighe-in-temporary-bucket/${{ env.RELEASE_TAG }}/ --delete
+          aws s3 sync ./out s3://playground-yashrajdighe-in-temporary-bucket --delete
