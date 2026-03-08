@@ -53,4 +53,5 @@ jobs:
         with:
           tag_name: "vtest-${{ github.run_id }}" # 👈 Explicitly tells GitHub what tag to use
           name: "Test Release ${{ github.run_id }}" # (Optional) Gives the release a nice title
-          files: out/*
+          files: out
+          make_latest: true
