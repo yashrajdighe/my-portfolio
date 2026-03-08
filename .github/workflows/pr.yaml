@@ -83,7 +83,7 @@ jobs:
           role-to-assume: arn:aws:iam::672491114190:role/test-my-portfolio-deployment
       - name: Sync to S3
         run: |
-          aws s3 sync ./out s3://playground-yashrajdighe-in-temporary-bucket/${{ env.RELEASE_TAG }}/ --dryrun
+          aws s3 sync ./out s3://playground-yashrajdighe-in-temporary-bucket/${{ env.RELEASE_TAG }}/ --delete
       # - name: Sync to S3
       #   uses: yashrajdighe/gh-s3-sync-action@main
       #   with:
