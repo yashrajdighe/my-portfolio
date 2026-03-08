@@ -82,9 +82,12 @@ jobs:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::672491114190:role/test-my-portfolio-deployment
       - name: Sync to S3
-        uses: yashrajdighe/gh-s3-sync-action@main
-        with:
-          SOURCE: out/
-          DELETE: True
-          DESTINATION: playground-yashrajdighe-in-temporary-bucket
-          DRYRUN: True
+        run: |
+          aws s3 sync ./out s3://playground-yashrajdighe-in-temporary-bucket/${{ env.RELEASE_TAG }}/ --dryrun
+      # - name: Sync to S3
+      #   uses: yashrajdighe/gh-s3-sync-action@main
+      #   with:
+      #     SOURCE: out/
+      #     DELETE: True
+      #     DESTINATION: playground-yashrajdighe-in-temporary-bucket
+      #     DRYRUN: True
