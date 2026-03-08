@@ -47,11 +47,14 @@ jobs:
       - id: install-dependencies
         run: npm ci
       - id: build-webapp
-        run: npm run build
+        run: |
+          npm run build
+          zip -r build.zip out/
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "vtest-${{ github.run_id }}" # 👈 Explicitly tells GitHub what tag to use
           name: "Test Release ${{ github.run_id }}" # (Optional) Gives the release a nice title
-          files: out
+          files: build.zip
           make_latest: true
+          generate_release_notes: true
