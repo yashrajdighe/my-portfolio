@@ -50,11 +50,22 @@ jobs:
         run: |
           npm run build
           zip -r build.zip out/
+      - id: generate-release-tag
+        run: |
+          # 1. Grab the current date in YYYY.MM.DD format
+          calver_date=$(date +'%Y.%m.%d')
+
+          # 2. Combine the date with a hyphen and the GitHub run number
+          # Example output: v2026.03.08-42
+          full_tag="v${calver_date}-${{ github.run_number }}"
+
+          # 3. Save it to the environment
+          echo "RELEASE_TAG=$full_tag" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "vtest-${{ github.run_id }}" # 👈 Explicitly tells GitHub what tag to use
-          name: "Test Release ${{ github.run_id }}" # (Optional) Gives the release a nice title
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: "Release ${{ env.RELEASE_TAG }}"
           files: build.zip
           make_latest: true
           generate_release_notes: true
