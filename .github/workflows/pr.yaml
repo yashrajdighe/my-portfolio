@@ -30,6 +30,8 @@ jobs:
     # needs:
     #   - lint
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - id: checkout-repo
         uses: actions/checkout@v6
