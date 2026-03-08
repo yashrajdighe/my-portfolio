@@ -76,6 +76,23 @@ jobs:
           files: build.zip
           make_latest: true
           generate_release_notes: true
+      - uses: actions/upload-artifact@v5
+        with:
+          name: build-output
+          path: out/
+          if-no-files-found: error
+          retention-days: 7
+  deploy-to-development:
+    needs:
+      - build-webapp
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-output
       - name: Login with aws cli
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -84,10 +101,3 @@ jobs:
       - name: Sync to S3
         run: |
           aws s3 sync ./out s3://playground-yashrajdighe-in-temporary-bucket/${{ env.RELEASE_TAG }}/ --delete
-      # - name: Sync to S3
-      #   uses: yashrajdighe/gh-s3-sync-action@main
-      #   with:
-      #     SOURCE: out/
-      #     DELETE: True
-      #     DESTINATION: playground-yashrajdighe-in-temporary-bucket
-      #     DRYRUN: True
