@@ -58,9 +58,9 @@ jobs:
       - name: Create Tag and Release
         uses: yd-devops-hub/semver-tag-manager@v1
         with:
-          prefix: pr-
+          prefix: pr-${{ github.event.pull_request.number }}-
           make-latest: false
-          dry-run: true
+          dry-run: false
           assets: |
             build.zip
       - uses: actions/upload-artifact@v5
