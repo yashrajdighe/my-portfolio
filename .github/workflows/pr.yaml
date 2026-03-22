@@ -100,15 +100,15 @@ jobs:
           aws-region: ap-south-1
           role-to-assume: arn:aws:iam::006763131804:role/my-portfolio-app-development-deployment-role
           role-session-name: fetch-secret
+      - name: Get Cloudflare API Token
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          parse-json-secrets: true
+          secret-ids: |
+            CLOUDFLARE_SECRET, arn:aws:secretsmanager:ap-south-1:530354880605:secret:/common/github/yd-devops-hub/global/CLOUDFLARE_API_TOKEN-VjcxZF
       - name: Export Cloudflare API Token
         run: |
-          secret_payload=$(aws secretsmanager get-secret-value \
-            --secret-id "arn:aws:secretsmanager:ap-south-1:530354880605:secret:/common/github/yd-devops-hub/global/CLOUDFLARE_API_TOKEN-VjcxZF" \
-            --region ap-south-1 \
-            --query "SecretString" \
-            --output text)
-          token=$(echo "$secret_payload" | jq -r '.CLOUDFLARE_API_TOKEN')
-          echo "CLOUDFLARE_API_TOKEN=$token" >> "$GITHUB_ENV"
+          echo "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_SECRET_CLOUDFLARE_API_TOKEN" >> "$GITHUB_ENV"
       - name: Run Cloudflare Cache Purge Action
         id: cloudflare-cache-purge
         uses: yd-devops-hub/cloudflare-cache-purge@v0
