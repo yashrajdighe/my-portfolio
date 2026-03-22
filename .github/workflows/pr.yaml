@@ -104,7 +104,7 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           secret-ids: |
-            CLOUDFLARE_API_TOKEN, arn:aws:secretsmanager:ap-south-1:530354880605:secret:/common/github/yd-devops-hub/global/test/CLOUDFLARE_API_TOKEN-jtu6D7
+            CLOUDFLARE_API_TOKEN, arn:aws:secretsmanager:ap-south-1:530354880605:secret:/common/github/yd-devops-hub/global/CLOUDFLARE_API_TOKEN-VjcxZF
       - name: Debug
         run: |
           printenv
