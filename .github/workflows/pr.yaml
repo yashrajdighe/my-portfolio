@@ -55,26 +55,14 @@ jobs:
         run: |
           npm run build
           zip -r build.zip out/
-      - name: Generate Release Tag
-        id: generate-release-tag
-        run: |
-          # 1. Grab the current date in YYYY.MM.DD format
-          calver_date=$(date +'%Y.%m.%d')
-
-          # 2. Combine the date with a hyphen and the GitHub run number
-          # Example output: v2026.03.08-42
-          full_tag="v${calver_date}-${{ github.run_number }}"
-
-          # 3. Save it to the environment
-          echo "RELEASE_TAG=$full_tag" >> $GITHUB_ENV
       - name: Create Tag and Release
-        uses: softprops/action-gh-release@v2
+        uses: yd-devops-hub/semver-tag-manager@v1
         with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          name: "Release ${{ env.RELEASE_TAG }}"
-          files: build.zip
-          make_latest: true
-          generate_release_notes: true
+          prefix: pr-
+          make-latest: false
+          dry-run: true
+          assets: |
+            build.zip
       - uses: actions/upload-artifact@v5
         with:
           name: build-output
