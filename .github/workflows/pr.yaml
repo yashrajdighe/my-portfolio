@@ -108,6 +108,12 @@ jobs:
       - name: Debug
         run: |
           printenv
+      - name: Run Cloudflare Cache Purge Action
+        id: cloudflare-cache-purge
+        uses: yd-devops-hub/cloudflare-cache-purge@v0
+        with:
+          cloudflare-api-token: ${{ env.CLOUDFLARE_API_TOKEN }}
+          purge-urls: '["https://api.yashrajdighe.in"]'
   deploy-to-staging:
     needs:
       - build-webapp
