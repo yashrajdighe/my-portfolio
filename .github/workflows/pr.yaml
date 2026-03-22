@@ -94,3 +94,28 @@ jobs:
       - name: Sync to S3
         run: |
           aws s3 sync ./out s3://my-portfolio-app-development-root --delete
+  deploy-to-staging:
+    needs:
+      - build-webapp
+      - deploy-to-development
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-output
+          path: out
+      - name: Login with aws cli
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::006763131804:role/my-portfolio-app-staging-deployment-role
+          role-session-name: portfolio-deploy-to-staging
+      - name: Sync to S3
+        run: |
+          aws s3 sync ./out s3://my-portfolio-app-staging-root --delete
