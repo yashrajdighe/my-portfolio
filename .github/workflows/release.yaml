@@ -1,0 +1,47 @@
+name: Release
+run-name: ${{ github.actor }} releasing portfolio
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release-portfolio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        id: checkout-repo
+        uses: actions/checkout@v6
+      - name: Get Node.js Version
+        id: get-node-version
+        run: |
+          export node_version=$(jq -r '.engines.node // empty' package.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -1)
+          echo "node_version=$node_version" >> $GITHUB_ENV
+      - name: Setup Node.js
+        id: setup-nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+          cache: "npm"
+      - name: Install Dependencies
+        id: install-dependencies
+        run: npm ci
+      - name: Build Webapp
+        id: build-webapp
+        run: |
+          npm run build
+          zip -r build.zip out/
+      - name: Create Tag and Release
+        uses: yd-devops-hub/semver-tag-manager@v1
+        with:
+          prefix: v
+          make-latest: true
+          update-major: true
+          assets: |
+            build.zip

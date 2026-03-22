@@ -1,0 +1,121 @@
+name: Pull Request Workflow
+run-name: ${{ github.actor }} running pr build and checks
+on:
+  pull_request:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - id: checkout-repo
+  #       uses: actions/checkout@v6
+  #     - id: get-node-version
+  #       run: |
+  #         export node_version=$(jq -r '.engines.node // empty' package.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -1)
+  #         echo "node_version=$node_version" >> $GITHUB_ENV
+  #     - id: setup-nodejs
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ env.node_version }}
+  #         cache: "npm"
+  #     - id: install-dependencies
+  #       run: npm ci
+  #     - id: run-es-lint
+  #       run: npm run lint
+  build-webapp:
+    # needs:
+    #   - lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        id: checkout-repo
+        uses: actions/checkout@v6
+      - name: Get Node.js Version
+        id: get-node-version
+        run: |
+          export node_version=$(jq -r '.engines.node // empty' package.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -1)
+          echo "node_version=$node_version" >> $GITHUB_ENV
+      - name: Setup Node.js
+        id: setup-nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+          cache: "npm"
+      - name: Install Dependencies
+        id: install-dependencies
+        run: npm ci
+      - name: Build Webapp
+        id: build-webapp
+        run: |
+          npm run build
+          zip -r build.zip out/
+      - name: Create Tag and Release
+        uses: yd-devops-hub/semver-tag-manager@v1
+        with:
+          prefix: pr-${{ github.event.pull_request.number }}-
+          make-latest: false
+          dry-run: false
+          update-major: false
+          assets: |
+            build.zip
+      - uses: actions/upload-artifact@v5
+        with:
+          name: build-output
+          path: out
+          if-no-files-found: error
+          retention-days: 7
+  deploy-to-development:
+    needs:
+      - build-webapp
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-output
+          path: out
+      - name: Login with aws cli
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::006763131804:role/my-portfolio-app-development-deployment-role
+          role-session-name: portfolio-deploy-to-development
+      - name: Sync to S3
+        run: |
+          aws s3 sync ./out s3://my-portfolio-app-development-root --delete
+  deploy-to-staging:
+    needs:
+      - build-webapp
+      - deploy-to-development
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-output
+          path: out
+      - name: Login with aws cli
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::063903862285:role/my-portfolio-app-staging-deployment-role
+          role-session-name: portfolio-deploy-to-staging
+      - name: Sync to S3
+        run: |
+          aws s3 sync ./out s3://my-portfolio-app-staging-root --delete
