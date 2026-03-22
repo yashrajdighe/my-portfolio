@@ -61,6 +61,7 @@ jobs:
           prefix: pr-${{ github.event.pull_request.number }}-
           make-latest: false
           dry-run: false
+          update-major: false
           assets: |
             build.zip
       - uses: actions/upload-artifact@v5
