@@ -114,7 +114,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
-          role-to-assume: arn:aws:iam::006763131804:role/my-portfolio-app-staging-deployment-role
+          role-to-assume: arn:aws:iam::063903862285:role/my-portfolio-app-staging-deployment-role
           role-session-name: portfolio-deploy-to-staging
       - name: Sync to S3
         run: |
