@@ -97,7 +97,7 @@ jobs:
       - name: Login with aws cli
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: us-east-1
+          aws-region: ap-south-1
           role-to-assume: arn:aws:iam::006763131804:role/my-portfolio-app-development-deployment-role
           role-session-name: fetc-secret
       - name: Get Cloudflare API Token
