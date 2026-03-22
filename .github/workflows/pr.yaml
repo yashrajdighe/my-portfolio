@@ -94,6 +94,20 @@ jobs:
       - name: Sync to S3
         run: |
           aws s3 sync ./out s3://my-portfolio-app-development-root --delete
+      - name: Login with aws cli
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-south-1
+          role-to-assume: arn:aws:iam::006763131804:role/my-portfolio-app-development-deployment-role
+          role-session-name: fetc-secret
+      - name: Get Cloudflare API Token
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            CLOUDFLARE_API_TOKEN, arn:aws:secretsmanager:ap-south-1:530354880605:secret:/common/github/yd-devops-hub/global/CLOUDFLARE_API_TOKEN-VjcxZF
+      - name: Debug
+        run: |
+          printenv
   deploy-to-staging:
     needs:
       - build-webapp
