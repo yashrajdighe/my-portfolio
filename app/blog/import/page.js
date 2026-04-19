@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import MotionWrap from "@/components/MotionWrap";
 
 import {
   IMPORT_STORAGE_KEY,
@@ -40,7 +39,7 @@ export default function BlogImportPage() {
       const payload = normalizeImportedPost(JSON.parse(jsonInput));
       window.sessionStorage.setItem(IMPORT_STORAGE_KEY, JSON.stringify(payload));
       setError("");
-      router.push("/blog/write");
+      router.push("/blog/write/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Invalid JSON payload.");
     }
@@ -50,7 +49,6 @@ export default function BlogImportPage() {
     <div className="flex-1">
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">
         <Section className="pt-0">
-          <MotionWrap>
             <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
               <SectionHeading
                 eyebrow="Blog"
@@ -58,7 +56,7 @@ export default function BlogImportPage() {
                 description="Paste the post JSON or upload the file to continue editing in the writer."
               />
               <div className="flex flex-wrap gap-3">
-                <Button href="/blog/write" variant="secondary" size="sm">
+                <Button href="/blog/write/" variant="secondary" size="sm">
                   Back to Write
                 </Button>
                 <Button href="/blogs/" variant="secondary" size="sm">
@@ -96,7 +94,6 @@ export default function BlogImportPage() {
                 </div>
               </Card>
             </div>
-          </MotionWrap>
         </Section>
       </main>
     </div>

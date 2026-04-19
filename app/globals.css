@@ -1,85 +1,98 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F2F3F3;
-  --foreground: #16191F;
-  --muted: #545B64;
-  --surface: #FFFFFF;
-  --border: #D5DBDB;
-  --accent: #FF9900;
-  --accent-hover: #EC7211;
-  --link: #0073BB;
-  --nav-bg: #232F3E;
-  --nav-text: #FFFFFF;
-  --success: #1D8102;
+  /* Medium-dark elegant slate — distinctly lifted, with clear tonal steps */
+  --bg: #2b2f3a;
+  --surface: #343945;
+  --surface-strong: #3d4250;
+  --bg-elevated: #424856;
+  --fg: #f2f4f8;
+  --muted: #b4bac6;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --accent: #7aa0f5;
+  --accent-hover: #9cbaff;
+  --link: #9cbaff;
+  --link-hover: #bed0ff;
+  /* Legacy single-accent aliases */
+  --background: var(--bg);
+  --foreground: var(--fg);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg);
+  color: var(--fg);
   font-family: var(--font-sans, ui-sans-serif, system-ui, -apple-system);
 }
 
 ::selection {
-  background: rgba(0, 115, 187, 0.15);
-  color: #16191F;
-}
-
-/* Fade-in-up animation for MotionWrap */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  background: rgba(122, 160, 245, 0.32);
+  color: var(--fg);
 }
 
 @layer utilities {
-  .surface {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
-  }
-
   .text-muted {
     color: var(--muted);
   }
 
-  .fade-in-up {
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
+  .glass {
+    background: var(--surface);
+    border: 1px solid var(--border);
   }
 
-  .fade-in-up-delay-1 {
-    animation-delay: 0.1s;
+  /** Calm card: solid elevated surface, hairline border, soft inner highlight */
+  .surface-card {
+    position: relative;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 1px 2px rgba(0, 0, 0, 0.25);
   }
 
-  .fade-in-up-delay-2 {
-    animation-delay: 0.2s;
+  .tile-hover {
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
   }
 
-  .fade-in-up-delay-3 {
-    animation-delay: 0.3s;
+  @media (prefers-reduced-motion: no-preference) {
+    .tile-hover:hover {
+      border-color: rgba(122, 160, 245, 0.32);
+      background-color: var(--surface-strong);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 1px 2px rgba(0, 0, 0, 0.28),
+        0 0 0 1px rgba(122, 160, 245, 0.1);
+    }
   }
 
-  /* Blog content typography — AWS Docs style */
+  @media (prefers-reduced-motion: reduce) {
+    .tile-hover:hover {
+      border-color: var(--border-strong);
+    }
+  }
+
+  /* Blog content — dark theme */
   .blog-content {
     overflow-wrap: break-word;
     word-break: break-word;
-    color: var(--foreground);
+    color: var(--fg);
   }
 
   .blog-content > * + * {
@@ -90,7 +103,7 @@ body {
     margin-top: 2rem;
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--foreground);
+    color: var(--fg);
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border);
   }
@@ -99,7 +112,7 @@ body {
     margin-top: 1.5rem;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--foreground);
+    color: var(--fg);
   }
 
   .blog-content ul,
@@ -127,15 +140,15 @@ body {
 
   .blog-content a:hover {
     text-decoration: underline;
-    color: #005ea2;
+    color: var(--link-hover);
   }
 
   .blog-content code {
     padding: 0.15rem 0.4rem;
     border-radius: 0.25rem;
-    background: #F2F3F3;
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--border);
-    color: var(--foreground);
+    color: var(--fg);
     font-size: 0.9em;
     word-break: break-all;
   }
@@ -144,7 +157,7 @@ body {
     border-left: 3px solid var(--accent);
     padding-left: 1rem;
     color: var(--muted);
-    background: #FAFAFA;
+    background: rgba(255, 255, 255, 0.03);
     padding: 0.75rem 1rem;
     border-radius: 0 0.25rem 0.25rem 0;
   }
@@ -171,8 +184,8 @@ body {
   }
 
   .blog-content thead th {
-    background: #F2F3F3;
-    color: var(--foreground);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--fg);
     text-align: left;
     font-weight: 600;
   }
@@ -185,16 +198,16 @@ body {
   }
 
   .blog-content tbody tr:nth-child(even) {
-    background: #FAFAFA;
+    background: rgba(255, 255, 255, 0.02);
   }
 
   .blog-content pre {
     overflow-x: auto;
     border-radius: 0.5rem;
-    background: #1B2A3E;
-    border: 1px solid #37475A;
+    background: #1f222a;
+    border: 1px solid var(--border-strong);
     padding: 1rem;
-    color: #D5DBDB;
+    color: #dde2ea;
   }
 
   .blog-content pre code {
@@ -235,5 +248,11 @@ body {
     .blog-content pre {
       padding: 0.85rem;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

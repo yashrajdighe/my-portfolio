@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import AuroraBackground from "@/components/aurora/AuroraBackground";
 import { JsonLd, personSchema, webSiteSchema } from "@/lib/jsonLd";
 import { getBasics } from "@/lib/resume";
 
@@ -81,9 +82,10 @@ export default async function RootLayout({ children }) {
         <JsonLd data={webSiteSchema()} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col bg-[var(--bg)] text-[var(--fg)] antialiased`}
         suppressHydrationWarning
       >
+        <AuroraBackground />
         {children}
         <Footer />
       </body>
