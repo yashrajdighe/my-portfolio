@@ -27,6 +27,10 @@ const DEFAULT_NAV_PROFILES = [
     label: "DevOps Hub",
     url: "https://github.com/yd-devops-hub",
   },
+  {
+    network: "Medium",
+    url: "https://medium.com/@yashraj45dighe",
+  },
 ];
 
 function normalizeUrl(u) {
@@ -34,14 +38,34 @@ function normalizeUrl(u) {
   return u.replace(/\/+$/, "").toLowerCase();
 }
 
+/** Single-icon networks: first entry wins (defaults before API) so canonical URLs override duplicates. */
+function exclusiveSocialSlot(network) {
+  const n = (network || "").toLowerCase();
+  if (n.includes("github")) return null;
+  if (n.includes("medium")) return "medium";
+  if (n.includes("linkedin")) return "linkedin";
+  if (n.includes("twitter") || n === "x") return "twitter";
+  if (n.includes("dev.to") || n === "dev") return "devto";
+  if (n.includes("stack")) return "stackoverflow";
+  return null;
+}
+
 function mergeProfiles(primary = [], secondary = []) {
-  const seen = new Set();
+  const seenUrl = new Set();
+  const seenSlot = new Set();
   const out = [];
   for (const p of [...primary, ...secondary]) {
     if (!p || !p.url) continue;
+    const slot = exclusiveSocialSlot(p.network);
+    if (slot) {
+      if (seenSlot.has(slot)) continue;
+      seenSlot.add(slot);
+      out.push(p);
+      continue;
+    }
     const key = normalizeUrl(p.url);
-    if (seen.has(key)) continue;
-    seen.add(key);
+    if (seenUrl.has(key)) continue;
+    seenUrl.add(key);
     out.push(p);
   }
   return out;
