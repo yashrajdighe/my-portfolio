@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import MotionWrap from "@/components/MotionWrap";
 import {
   IMPORT_STORAGE_KEY,
   inputClasses,
@@ -139,7 +138,6 @@ export default function BlogWritePage() {
     <div className="flex-1">
       <main className="mx-auto flex w-full max-w-5xl flex-col px-4 pb-20 pt-16 sm:px-6 md:px-10 md:pb-24 md:pt-20">
         <Section className="pt-0">
-          <MotionWrap>
             <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
               <SectionHeading
                 eyebrow="Blog"
@@ -147,7 +145,7 @@ export default function BlogWritePage() {
                 description="Draft your post in TinyMCE, then export the JSON and drop it into data/blogs/."
               />
               <div className="flex flex-wrap gap-3">
-                <Button href="/blog/import" variant="secondary" size="sm">
+                <Button href="/blog/import/" variant="secondary" size="sm">
                   Import JSON
                 </Button>
                 <Button href="/blogs/" variant="secondary" size="sm">
@@ -283,7 +281,6 @@ export default function BlogWritePage() {
                 </div>
               </Card>
             </div>
-          </MotionWrap>
         </Section>
       </main>
     </div>

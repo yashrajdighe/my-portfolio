@@ -2,15 +2,15 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const base =
-  "inline-flex cursor-pointer items-center justify-center gap-2 rounded font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]";
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]";
 
 const variants = {
   primary:
-    "bg-[var(--accent)] text-[#16191F] font-semibold hover:bg-[var(--accent-hover)] shadow-sm",
+    "bg-[var(--accent)] font-semibold text-white shadow-sm hover:bg-[var(--accent-hover)] active:brightness-95",
   ghost:
-    "text-[var(--link)] hover:text-[#005ea2] hover:underline",
+    "relative pb-0.5 text-[var(--fg)] after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-[var(--accent)] after:transition-transform hover:after:scale-x-100 hover:text-[var(--fg)]",
   secondary:
-    "border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] hover:border-[var(--link)] hover:text-[var(--link)] shadow-sm",
+    "border border-[var(--border)] bg-[var(--surface)] text-[var(--fg)] backdrop-blur-sm hover:border-[var(--border-strong)] hover:bg-white/[0.04]",
 };
 
 const sizes = {
@@ -35,21 +35,14 @@ export function Button({
   const classes = cn(base, variants[variant], sizes[size], className);
 
   if (href) {
-    // Download links always use a plain <a> (not Next.js <Link>).
     if (download !== undefined) {
       return (
-        <a
-          className={classes}
-          href={href}
-          download={download}
-          {...props}
-        >
+        <a className={classes} href={href} download={download} {...props}>
           {children}
         </a>
       );
     }
 
-    // Internal path links → next/link for client-side navigation
     if (isInternalPath(href)) {
       return (
         <Link className={classes} href={href} {...props}>
@@ -58,7 +51,6 @@ export function Button({
       );
     }
 
-    // External, mailto, hash-only, etc. → regular <a>
     const isExternal = /^https?:\/\//i.test(href);
     return (
       <a

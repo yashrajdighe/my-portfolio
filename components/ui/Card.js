@@ -1,14 +1,11 @@
+import Tile from "@/components/bento/Tile";
 import { cn } from "@/lib/utils";
 
+/**
+ * Backwards-compatible wrapper: blog pages use Card; implementation is Tile (glass + gradient border).
+ */
 export function Card({ children, className }) {
   return (
-    <div
-      className={cn(
-        "rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-6",
-        className
-      )}
-    >
-      {children}
-    </div>
+    <Tile className={cn(className)}>{children}</Tile>
   );
 }
